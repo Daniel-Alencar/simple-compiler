@@ -31,9 +31,10 @@ public class Token {
     // If kind is IDENTIFIER and spelling matches one 
     // of the keybords, change the token's kind accordingly
     if(kind == IDENTIFIER) {
-      for(int k = BEGIN; k <= WHILE; k++) {
-        if(spelling.equals(spellings[k])) {
-          this.kind = (byte)k;
+      
+      for(int i = BEGIN; i <= WHILE; i++) {
+        if(spelling.equals(spellings[i])) {
+          this.kind = (byte)i;
           break;
         }
       }

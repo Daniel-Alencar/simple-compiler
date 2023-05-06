@@ -1,4 +1,6 @@
 package minitrianglecompiler;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
  *
@@ -7,29 +9,83 @@ package minitrianglecompiler;
 public class Scanner {
 
 	// First source character
-	private char currentChar = ' ';
+	private char currentChar;
+	private FileReader fileReader;
 
 	private byte currentKind;
 	private StringBuffer currentSpelling;
 
+	public Scanner(String pathToFile) {
+		try {
+			String currentDirectory = System.getProperty("user.dir");
+
+			FileReader fileReader = new FileReader(
+				currentDirectory + pathToFile
+			);
+			int character;
+			// Lê o arquivo caractere por caractere
+			if((character = fileReader.read()) != -1) {
+				this.currentChar = (char)character;
+				System.out.println("Caractere: " + this.currentChar);
+			}
+			this.fileReader = fileReader;
+
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	public void getNextCaracter() {
+		int character;
+
+		try {
+			if((character = fileReader.read()) != -1) {
+				this.currentChar = (char)character;
+				System.out.println("Caractere: " + this.currentChar);
+			}
+		}	catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	public void readFile(String pathToFile) {
+		// Cria um objeto FileReader que representa o arquivo que queremos ler
+		try {
+			String currentDirectory = System.getProperty("user.dir");
+      System.out.println("O diretório atual é: " + currentDirectory);
+
+			FileReader fileReader = new FileReader(
+				currentDirectory + pathToFile
+			);
+			int character;
+			// Lê o arquivo caractere por caractere
+			while ((character = fileReader.read()) != -1) {
+				System.out.print((char) character);
+			}
+			System.out.println();
+
+			fileReader.close();
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
 	private void take(char expectedChar) {
 		if(currentChar == expectedChar) {
-			if(currentChar == expectedChar) {
-				currentSpelling.append(currentChar);
+			currentSpelling.append(currentChar);
+			// Next source character
+			getNextCaracter();
 
-				// Next source character
-				currentChar = ' ';
-
-			} else {
-				// Report a lexical error
-			}
+		} else {
+			// Talvez seja feito outra coisa nesse bloco
+			System.out.println("Erro léxico!");
 		}
 	}
 
 	private void takeIt() {
 		currentSpelling.append(currentChar);
 		// Next source character
-		currentChar = ' ';
+		getNextCaracter();
 	}
 
 	protected boolean isDigit(char caracter) {
