@@ -32,20 +32,57 @@ public class Scanner {
 		currentChar = ' ';
 	}
 
-	private boolean isLetter(char caracter) {
-		return true;
+	protected boolean isDigit(char caracter) {
+		if(caracter >= '0' && caracter <= '9') {
+			return true;
+		}
+		return false;
 	}
 
-	private boolean isDigit(char caracter) {
-		return true;
+	protected boolean isLetter(char caracter) {
+		if(
+				(caracter >= 'a' && caracter <= 'z') ||
+				(caracter >= 'A' && caracter <= 'Z')
+			) {
+			return true;
+		}
+		return false;
 	}
 
-	private boolean isOperator(char caracter) {
-		return true;
+	protected boolean isOperator(char caracter) {
+		switch(caracter) {
+			case '+':
+			case '-':
+			case '*':
+			case '/':
+			case '<':
+			case '>':
+			case '=':
+			case '\\':
+				return true;
+			default:
+				return false;
+		}
 	}
 
-	private boolean isGraphicCaracter(char caracter) {
-		return true;
+	protected boolean isGraphicCaracter(char caracter) {
+
+		/*
+		32 a 47: inclui espaço em branco, ponto, vírgula, ponto e vírgula, etc.
+		58 a 64: inclui dois pontos, ponto de interrogação, arroba, etc.
+		91 a 96: inclui colchetes, contrabarra inversa, acento grave, etc.
+		123 a 126: inclui chaves, til, etc.
+		128 a 159: inclui setas, blocos de desenho e símbolos matemáticos.
+		*/
+		int minimumValues[] = { 32, 58, 91, 123, 128 };
+		int maximumValues[] = { 47, 64, 96, 126, 159 };
+		
+		for(int i = 0; i < 5; i++) {
+			if(caracter >= minimumValues[i] && caracter <= maximumValues[i]) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private byte scanToken() {
