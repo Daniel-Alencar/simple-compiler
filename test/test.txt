@@ -1,1 +1,1 @@
-let variable := 750;
+integer variable := 750;

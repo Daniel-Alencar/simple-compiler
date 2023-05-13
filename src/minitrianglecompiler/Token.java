@@ -44,7 +44,6 @@ public class Token {
     // devemos verificar se é uma das palavras reservadas.
     // Se for, o kind deve ser alterado apropriadamente. 
     if(kind == IDENTIFIER) {
-      
       for(byte i = BEGIN; i <= END; i++) {
         if(spelling.equals(spellings[i])) {
           this.kind = i;

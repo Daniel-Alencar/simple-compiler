@@ -7,7 +7,7 @@ import java.io.IOException;
  * @author
  */
 public class Scanner {
-	private FileReader fileReader;
+	public FileReader fileReader;
 
 	private char currentChar;
 
@@ -33,7 +33,7 @@ public class Scanner {
 			System.out.println(e.getMessage());
 		}
 	}
-
+	
 	public void getNextCaracter() {
 		int character;
 
@@ -101,20 +101,15 @@ public class Scanner {
 		return false;
 	}
 
-	protected boolean isOperator(String word) {
-		switch(word) {
-			case "+":
-			case "-":
-			case "or":
-			case "*":
-			case "/":
-			case "and":
-			case "<":
-			case ">":
-			case "<=":
-			case ">=":
-			case "=":
-			case "<>":
+	protected boolean isOperator(char character) {
+		switch(character) {
+			case '+':
+			case '-':
+			case '*':
+			case '/':
+			case '<':
+			case '>':
+			case '=':
 				return true;
 			default:
 				return false;
@@ -159,8 +154,18 @@ public class Scanner {
 			while(isLetter(currentChar) || isDigit(currentChar)) {
 				takeIt();
 			}
-			if(currentSpelling.equals("true") || currentSpelling.equals("false")) {
-				return Token.BOOLLITERAL;
+			if(
+				currentSpelling.toString().equals("true") || 
+				currentSpelling.toString().equals("false")) {
+					return Token.BOOLLITERAL;
+			}
+			if(
+				currentSpelling.toString().equals("or") ||
+				currentSpelling.toString().equals("and")) {
+					return Token.OPERATOR;
+			}
+			if(isTipoSimples(currentSpelling.toString())) {
+				return Token.TIPOSIMPLES;
 			}
 			return Token.IDENTIFIER;
 		}
@@ -176,7 +181,7 @@ public class Scanner {
 				return Token.FLOATLITERAL;
 
 			} else {
-				return Token.ERROR;
+				return Token.PERIOD;
 			}
 
 		} else if(isDigit(currentChar)) {
@@ -231,6 +236,7 @@ public class Scanner {
 			if(currentChar == '.') {
 				takeIt();
 				if(currentChar == '.') {
+					takeIt();
 					return Token.ELLIPSIS;
 				}
 				return Token.ERROR;
@@ -253,7 +259,27 @@ public class Scanner {
 			return Token.HASHTAG;
 		}
 
+		if(isOperator(currentChar)) {
+			if(currentChar == '<') {
+				takeIt();
+				if(currentChar == '=' || currentChar == '>') {
+					takeIt();
+				}
+				return Token.OPERATOR;
+
+			} else if(currentChar == '>') {
+				takeIt();
+				if(currentChar == '=') {
+					takeIt();
+				}
+				return Token.OPERATOR;
+			}
+			takeIt();
+			return Token.OPERATOR;
+		}
+
 		if(currentChar == '\000') {
+			takeIt();
 			return Token.EOT;
 		}
 
