@@ -1,4 +1,5 @@
 package minitrianglecompiler;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -33,7 +34,14 @@ public class Scanner {
 			System.out.println(e.getMessage());
 		}
 	}
-	
+
+	public boolean isEOF() throws IOException {		
+		if(fileReader.read() != -1) {
+			return false;
+		}
+		return true;
+	}
+
 	public void getNextCaracter() {
 		int character;
 
@@ -101,7 +109,7 @@ public class Scanner {
 		return false;
 	}
 
-	protected boolean isOperator(char character) {
+	protected boolean isBasicOperator(char character) {
 		switch(character) {
 			case '+':
 			case '-':
@@ -116,7 +124,7 @@ public class Scanner {
 		}
 	}
 
-	protected boolean isTipoSimples(String word) {
+	protected boolean isSimpleType(String word) {
 		switch(word) {
 			case "integer":
 			case "real":
@@ -164,7 +172,7 @@ public class Scanner {
 				currentSpelling.toString().equals("and")) {
 					return Token.OPERATOR;
 			}
-			if(isTipoSimples(currentSpelling.toString())) {
+			if(isSimpleType(currentSpelling.toString())) {
 				return Token.TIPOSIMPLES;
 			}
 			return Token.IDENTIFIER;
@@ -259,7 +267,7 @@ public class Scanner {
 			return Token.HASHTAG;
 		}
 
-		if(isOperator(currentChar)) {
+		if(isBasicOperator(currentChar)) {
 			if(currentChar == '<') {
 				takeIt();
 				if(currentChar == '=' || currentChar == '>') {
