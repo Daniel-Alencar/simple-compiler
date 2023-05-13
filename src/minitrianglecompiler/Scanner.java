@@ -7,10 +7,9 @@ import java.io.IOException;
  * @author
  */
 public class Scanner {
-
-	// First source character
-	private char currentChar;
 	private FileReader fileReader;
+
+	private char currentChar;
 
 	private byte currentKind;
 	private StringBuffer currentSpelling;
@@ -73,7 +72,6 @@ public class Scanner {
 	private void take(char expectedChar) {
 		if(currentChar == expectedChar) {
 			currentSpelling.append(currentChar);
-			// Next source character
 			getNextCaracter();
 
 		} else {
@@ -84,7 +82,6 @@ public class Scanner {
 
 	private void takeIt() {
 		currentSpelling.append(currentChar);
-		// Next source character
 		getNextCaracter();
 	}
 
@@ -97,38 +94,52 @@ public class Scanner {
 
 	protected boolean isLetter(char caracter) {
 		if(
-				(caracter >= 'a' && caracter <= 'z') ||
-				(caracter >= 'A' && caracter <= 'Z')
+				(caracter >= 'a' && caracter <= 'z')
 			) {
 			return true;
 		}
 		return false;
 	}
 
-	protected boolean isOperator(char caracter) {
-		switch(caracter) {
-			case '+':
-			case '-':
-			case '*':
-			case '/':
-			case '<':
-			case '>':
-			case '=':
-			case '\\':
+	protected boolean isOperator(String word) {
+		switch(word) {
+			case "+":
+			case "-":
+			case "or":
+			case "*":
+			case "/":
+			case "and":
+			case "<":
+			case ">":
+			case "<=":
+			case ">=":
+			case "=":
+			case "<>":
 				return true;
 			default:
 				return false;
 		}
 	}
 
+	protected boolean isTipoSimples(String word) {
+		switch(word) {
+			case "integer":
+			case "real":
+			case "boolean":
+				return true;
+			default:
+				return false;
+		}
+	} 
+
 	protected boolean isGraphicCaracter(char caracter) {
 
 		/*
-		32 a 47: inclui espaço em branco, ponto, vírgula, ponto e vírgula, etc.
-		58 a 64: inclui dois pontos, ponto de interrogação, arroba, etc.
-		91 a 96: inclui colchetes, contrabarra inversa, acento grave, etc.
-		123 a 126: inclui chaves, til, etc.
-		128 a 159: inclui setas, blocos de desenho e símbolos matemáticos.
+			32 a 47: inclui espaço em branco, ponto, vírgula, ponto e vírgula e outros.
+			58 a 64: inclui dois pontos, ponto de interrogação, arroba e outros.
+			91 a 96: inclui colchetes, contrabarra inversa, acento grave e outros.
+			123 a 126: inclui chaves, til e outros.
+			128 a 159: inclui setas, blocos de desenho e símbolos matemáticos.
 		*/
 		int minimumValues[] = { 32, 58, 91, 123, 128 };
 		int maximumValues[] = { 47, 64, 96, 126, 159 };
@@ -148,26 +159,41 @@ public class Scanner {
 			while(isLetter(currentChar) || isDigit(currentChar)) {
 				takeIt();
 			}
+			if(currentSpelling.equals("true") || currentSpelling.equals("false")) {
+				return Token.BOOLLITERAL;
+			}
 			return Token.IDENTIFIER;
-
 		}
-		
-		if(isDigit(currentChar)) {
+
+		if(currentChar == '.') {
 			takeIt();
+
+			if(isDigit(currentChar)) {
+				takeIt();
+				while(isDigit(currentChar)) {
+					takeIt();
+				}
+				return Token.FLOATLITERAL;
+
+			} else {
+				return Token.ERROR;
+			}
+
+		} else if(isDigit(currentChar)) {
+			takeIt();
+
 			while(isDigit(currentChar)) {
 				takeIt();
 			}
+			if(currentChar == '.') {
+				takeIt();
+
+				while(isDigit(currentChar)) {
+					takeIt();
+				}
+				return Token.FLOATLITERAL;
+			}
 			return Token.INTLITERAL;
-		}
-
-		if(isOperator(currentChar)) {
-			takeIt();
-			return Token.OPERATOR;
-		}
-
-		if(currentChar == ';') {
-			takeIt();
-			return Token.SEMICOLON;
 		}
 
 		if(currentChar == ':') {
@@ -180,9 +206,9 @@ public class Scanner {
 			}
 		}
 
-		if(currentChar == '~') {
+		if(currentChar == ';') {
 			takeIt();
-			return Token.IS;
+			return Token.SEMICOLON;
 		}
 
 		if(currentChar == '(') {
@@ -193,6 +219,38 @@ public class Scanner {
 		if(currentChar == ')') {
 			takeIt();
 			return Token.RPAREN;
+		}
+
+		if(currentChar == ',') {
+			takeIt();
+			return Token.COMMA;
+		}
+
+		if(currentChar == '.') {
+			takeIt();
+			if(currentChar == '.') {
+				takeIt();
+				if(currentChar == '.') {
+					return Token.ELLIPSIS;
+				}
+				return Token.ERROR;
+			}
+			return Token.PERIOD;
+		}
+
+		if(currentChar == '!') {
+			takeIt();
+			return Token.EXCLAMATION;
+		}
+
+		if(currentChar == '@') {
+			takeIt();
+			return Token.ARROBA;
+		}
+
+		if(currentChar == '#') {
+			takeIt();
+			return Token.HASHTAG;
 		}
 
 		if(currentChar == '\000') {

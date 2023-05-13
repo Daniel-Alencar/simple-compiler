@@ -10,31 +10,44 @@ public class Token {
   public String spelling;
 
   public final static byte 
-    IDENTIFIER = 0, INTLITERAL = 1, OPERATOR = 2,
-    BEGIN = 3, CONST = 4, DO = 5, ELSE = 6, END = 7,
-    IF = 8, IN = 9, LET = 10, THEN = 11, VAR = 12,
-    WHILE = 13, SEMICOLON = 14, COLON = 15,
-    BECOMES = 16, IS = 17, LPAREN = 18,
-    RPAREN = 19, EOT = 20, ERROR = 21;
+    IDENTIFIER = 0,
+    BOOLLITERAL = 1, INTLITERAL = 2, FLOATLITERAL = 3,
+
+    BEGIN = 4, IF = 5, THEN = 6, ELSE = 7, VAR = 8, WHILE = 9, DO = 10, END = 11,
+    BECOMES = 12, LPAREN = 13, RPAREN = 14, COLON = 15, SEMICOLON = 16,
+    COMMA = 17, PERIOD = 18,
+
+    EXCLAMATION = 19, ARROBA = 20, HASHTAG = 21, ELLIPSIS = 22,
+
+    OPERATOR = 23, TIPOSIMPLES = 24,
+    EOT = 25, ERROR = 26;
 
   private final static String[] spellings = {
-    "<identifier>", "<integer-literal>", "<operator>",
-    "begin", "const", "do", "else", "end", "if", "in", "let", "then",
-    "var", "while", ";", ":", ":=", "~", "(", ")", "<eot>",
-    "<error>"
+    "<identifier>",
+    "<bool-literal>", "<int-literal>", "<float-literal>",
+
+    "begin", "if", "then", "else", "var", "while", "do", "end",
+    ":=", "(", ")", ":", ";",
+    ",", ".",
+
+    "!", "@", "#", "...",
+
+    "<operator>", "<tipo-simples>",
+    "<eot>", "<error>"
   };
 
   public Token(byte kind, String spelling) {
     this.kind = kind;
     this.spelling = spelling;
 
-    // If kind is IDENTIFIER and spelling matches one 
-    // of the keybords, change the token's kind accordingly
+    // Se kind for reconhecido como IDENTIFIER,
+    // devemos verificar se é uma das palavras reservadas.
+    // Se for, o kind deve ser alterado apropriadamente. 
     if(kind == IDENTIFIER) {
       
-      for(int i = BEGIN; i <= WHILE; i++) {
+      for(byte i = BEGIN; i <= END; i++) {
         if(spelling.equals(spellings[i])) {
-          this.kind = (byte)i;
+          this.kind = i;
           break;
         }
       }

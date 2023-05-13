@@ -1,8 +1,10 @@
 <Token> ::=
-  begin | end | if | then | else | var | while | do |
-  := | ( | ) | : | ; | "(" | ")" | , | . |
   <id> | <literal> |
-  <op-ad> | <op-mul> | <op-rel> | <outros> |
+  
+  begin | end | if | then |
+  else | var | while | do |
+  := | ( | ) | : | ; | , | . |
+  <outros> | <op-ad> | <op-mul> | <op-rel> |
   <tipo-simples>
 
 <id> ::= <letra> | <id><letra> | <id><digito> 
@@ -21,6 +23,8 @@
 
 <tipo-simples> ::= integer | real | boolean
 
+OBS:
+- Talvez "(" | ")" façam parte dos tokens
 =================================================================================
 
 <Separator> ::= 
