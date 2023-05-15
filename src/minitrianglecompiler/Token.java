@@ -8,6 +8,8 @@ public class Token {
   
   public byte kind;
   public String spelling;
+  public int line;
+  public int column;
 
   public final static byte 
     IDENTIFIER = 0, INTLITERAL = 1, OPERATOR = 2,
@@ -24,9 +26,11 @@ public class Token {
     "<error>"
   };
 
-  public Token(byte kind, String spelling) {
+  public Token(byte kind, String spelling, int line, int column) {
     this.kind = kind;
     this.spelling = spelling;
+    this.line = line;
+    this.column = column;
 
     // If kind is IDENTIFIER and spelling matches one 
     // of the keybords, change the token's kind accordingly
