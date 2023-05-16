@@ -1,4 +1,5 @@
 package minitrianglecompiler;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -7,10 +8,9 @@ import java.io.IOException;
  * @author
  */
 public class Scanner {
+	public FileReader fileReader;
 
-	// First source character
 	private char currentChar;
-	private FileReader fileReader;
 
 	private byte currentKind;
 	private StringBuffer currentSpelling;
@@ -19,8 +19,6 @@ public class Scanner {
         private int currentColumn;
 
 	public Scanner(String pathToFile) {
-                this.currentLine = 1;
-                this.currentColumn = 1;
 		try {
 			String currentDirectory = System.getProperty("user.dir");
 
@@ -40,17 +38,28 @@ public class Scanner {
 		}
 	}
 
-	public void getNextCharacter() {
+	public boolean isEOF() throws IOException {		
+		if(fileReader.read() != -1) {
+			return false;
+		}
+		return true;
+	}
+
+	public void getNextCaracter() {
 		int character;
                 
-                if (currentChar == '\n') {
+                switch (currentChar) {
+                case '\n':
                     currentLine++;
                     currentColumn = 1;
-                } else if (currentChar == '\t') {
-                  currentColumn += 4; // Incrementar a coluna por 4, por exemplo
-                 } else {
-                  currentColumn++;
-                }
+                    break;
+                case '\t':
+                    currentColumn += 4; // Incrementar a coluna por 4, por exemplo
+                    break;
+                default:
+                    currentColumn++;
+                    break;
+            }
                 
 		try {
 			if((character = fileReader.read()) != -1) {
@@ -62,63 +71,61 @@ public class Scanner {
 		}
 	}
 
-        public void readFile(String pathToFile) {
-            try {
-              String currentDirectory = System.getProperty("user.dir");
-              String filePath = currentDirectory + pathToFile;
+	public void readFile(String pathToFile) {
+		// Cria um objeto FileReader que representa o arquivo que queremos ler
+		try {
+			String currentDirectory = System.getProperty("user.dir");
+      System.out.println("O diretório atual é: " + currentDirectory);
 
-              FileReader fileReader = new FileReader(filePath);
-              int character;
+			FileReader fileReader = new FileReader(
+				currentDirectory + pathToFile
+			);
+			int character;
+			// Lê o arquivo caractere por caractere
+			while ((character = fileReader.read()) != -1) {
+				System.out.print((char) character);
+			}
+			System.out.println();
 
-              while ((character = fileReader.read()) != -1) {
-                this.currentChar = (char) character;
-                System.out.println("Caractere: " + this.currentChar);
-              }
-
-              fileReader.close();
-            } catch (IOException e) {
-              System.out.println(e.getMessage());
-            }
-        }
-
+			fileReader.close();
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+	}
 
 	private void take(char expectedChar) {
 		if(currentChar == expectedChar) {
 			currentSpelling.append(currentChar);
-			// Next source character
-			getNextCharacter();
+			getNextCaracter();
 
 		} else {
 			// Talvez seja feito outra coisa nesse bloco
-			// System.out.println("Erro léxico!");
-			//return Token.Error;
+			System.out.println("Erro léxico!");
 		}
 	}
 
 	private void takeIt() {
 		currentSpelling.append(currentChar);
-		// Next source character
-		getNextCharacter();
+		getNextCaracter();
 	}
 
-	protected boolean isDigit(char character) {
-		if(character >= '0' && character <= '9') {
+	protected boolean isDigit(char caracter) {
+		if(caracter >= '0' && caracter <= '9') {
 			return true;
 		}
 		return false;
 	}
 
-	protected boolean isLetter(char character) {
+	protected boolean isLetter(char caracter) {
 		if(
-				(character >= 'a' && character <= 'z') ||
-				(character >= 'A' && character <= 'Z')
+				(caracter >= 'a' && caracter <= 'z')
 			) {
 			return true;
 		}
 		return false;
 	}
 
-	protected boolean isOperator(char character) {
+	protected boolean isBasicOperator(char character) {
 		switch(character) {
 			case '+':
 			case '-':
@@ -127,27 +134,37 @@ public class Scanner {
 			case '<':
 			case '>':
 			case '=':
-			case '\\':
 				return true;
 			default:
 				return false;
 		}
 	}
 
-	protected boolean isGraphicCharacter(char character) {
+	protected boolean isSimpleType(String word) {
+		switch(word) {
+			case "integer":
+			case "real":
+			case "boolean":
+				return true;
+			default:
+				return false;
+		}
+	} 
+
+	protected boolean isGraphicCaracter(char caracter) {
 
 		/*
-		32 a 47: inclui espaço em branco, ponto, vírgula, ponto e vírgula, etc.
-		58 a 64: inclui dois pontos, ponto de interrogação, arroba, etc.
-		91 a 96: inclui colchetes, contrabarra inversa, acento grave, etc.
-		123 a 126: inclui chaves, til, etc.
-		128 a 159: inclui setas, blocos de desenho e símbolos matemáticos.
+			32 a 47: inclui espaço em branco, ponto, vírgula, ponto e vírgula e outros.
+			58 a 64: inclui dois pontos, ponto de interrogação, arroba e outros.
+			91 a 96: inclui colchetes, contrabarra inversa, acento grave e outros.
+			123 a 126: inclui chaves, til e outros.
+			128 a 159: inclui setas, blocos de desenho e símbolos matemáticos.
 		*/
 		int minimumValues[] = { 32, 58, 91, 123, 128 };
 		int maximumValues[] = { 47, 64, 96, 126, 159 };
 		
 		for(int i = 0; i < 5; i++) {
-			if(character >= minimumValues[i] && character <= maximumValues[i]) {
+			if(caracter >= minimumValues[i] && caracter <= maximumValues[i]) {
 				return true;
 			}
 		}
@@ -161,26 +178,51 @@ public class Scanner {
 			while(isLetter(currentChar) || isDigit(currentChar)) {
 				takeIt();
 			}
+			if(
+				currentSpelling.toString().equals("true") || 
+				currentSpelling.toString().equals("false")) {
+					return Token.BOOLLITERAL;
+			}
+			if(
+				currentSpelling.toString().equals("or") ||
+				currentSpelling.toString().equals("and")) {
+					return Token.OPERATOR;
+			}
+			if(isSimpleType(currentSpelling.toString())) {
+				return Token.TIPOSIMPLES;
+			}
 			return Token.IDENTIFIER;
-
 		}
-		
-		if(isDigit(currentChar)) {
+
+		if(currentChar == '.') {
 			takeIt();
+
+			if(isDigit(currentChar)) {
+				takeIt();
+				while(isDigit(currentChar)) {
+					takeIt();
+				}
+				return Token.FLOATLITERAL;
+
+			} else {
+				return Token.PERIOD;
+			}
+
+		} else if(isDigit(currentChar)) {
+			takeIt();
+
 			while(isDigit(currentChar)) {
 				takeIt();
 			}
+			if(currentChar == '.') {
+				takeIt();
+
+				while(isDigit(currentChar)) {
+					takeIt();
+				}
+				return Token.FLOATLITERAL;
+			}
 			return Token.INTLITERAL;
-		}
-
-		if(isOperator(currentChar)) {
-			takeIt();
-			return Token.OPERATOR;
-		}
-
-		if(currentChar == ';') {
-			takeIt();
-			return Token.SEMICOLON;
 		}
 
 		if(currentChar == ':') {
@@ -193,9 +235,9 @@ public class Scanner {
 			}
 		}
 
-		if(currentChar == '~') {
+		if(currentChar == ';') {
 			takeIt();
-			return Token.IS;
+			return Token.SEMICOLON;
 		}
 
 		if(currentChar == '(') {
@@ -208,7 +250,60 @@ public class Scanner {
 			return Token.RPAREN;
 		}
 
+		if(currentChar == ',') {
+			takeIt();
+			return Token.COMMA;
+		}
+
+		if(currentChar == '.') {
+			takeIt();
+			if(currentChar == '.') {
+				takeIt();
+				if(currentChar == '.') {
+					takeIt();
+					return Token.ELLIPSIS;
+				}
+				return Token.ERROR;
+			}
+			return Token.PERIOD;
+		}
+
+		if(currentChar == '!') {
+			takeIt();
+			return Token.EXCLAMATION;
+		}
+
+		if(currentChar == '@') {
+			takeIt();
+			return Token.ARROBA;
+		}
+
+		if(currentChar == '#') {
+			takeIt();
+			return Token.HASHTAG;
+		}
+
+		if(isBasicOperator(currentChar)) {
+			if(currentChar == '<') {
+				takeIt();
+				if(currentChar == '=' || currentChar == '>') {
+					takeIt();
+				}
+				return Token.OPERATOR;
+
+			} else if(currentChar == '>') {
+				takeIt();
+				if(currentChar == '=') {
+					takeIt();
+				}
+				return Token.OPERATOR;
+			}
+			takeIt();
+			return Token.OPERATOR;
+		}
+
 		if(currentChar == '\000') {
+			takeIt();
 			return Token.EOT;
 		}
 
@@ -220,7 +315,7 @@ public class Scanner {
 			case '!':
 				takeIt();
 
-				while(isGraphicCharacter(currentChar)) {
+				while(isGraphicCaracter(currentChar)) {
 					takeIt();
 				}
 				take('\n');
@@ -239,7 +334,8 @@ public class Scanner {
 		}
 		currentSpelling = new StringBuffer("");
 		currentKind = scanToken();
+
 		return new Token(currentKind, currentSpelling.toString(), currentLine, currentColumn);
 	}
 
-}
+    }

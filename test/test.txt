@@ -1,1 +1,5 @@
 let variable := 750;
+
+if(variable = 750) {
+	variable := 500;
+}
