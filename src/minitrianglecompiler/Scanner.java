@@ -1,5 +1,4 @@
 package minitrianglecompiler;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -15,8 +14,8 @@ public class Scanner {
 	private byte currentKind;
 	private StringBuffer currentSpelling;
         
-        private int currentLine;
-        private int currentColumn;
+	private int currentLine;
+	private int currentColumn;
 
 	public Scanner(String pathToFile) {
 		try {
@@ -48,18 +47,19 @@ public class Scanner {
 	public void getNextCaracter() {
 		int character;
                 
-                switch (currentChar) {
-                case '\n':
-                    currentLine++;
-                    currentColumn = 1;
-                    break;
-                case '\t':
-                    currentColumn += 4; // Incrementar a coluna por 4, por exemplo
-                    break;
-                default:
-                    currentColumn++;
-                    break;
-            }
+		switch (currentChar) {
+		case '\n':
+			currentLine++;
+			currentColumn = 1;
+			break;
+		case '\t':
+			// Incrementar a coluna por 4, por exemplo
+			currentColumn += 4;
+			break;
+		default:
+			currentColumn++;
+			break;
+		}
                 
 		try {
 			if((character = fileReader.read()) != -1) {
@@ -337,5 +337,4 @@ public class Scanner {
 
 		return new Token(currentKind, currentSpelling.toString(), currentLine, currentColumn);
 	}
-
-    }
+}

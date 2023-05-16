@@ -1,7 +1,5 @@
 package minitrianglecompiler;
 
-import javax.xml.catalog.Catalog;
-
 /**
  *
  * @author
@@ -21,8 +19,8 @@ public class MiniTriangleCompiler {
 				System.out.println("TOKEN:");
 				System.out.println("speeling:" + currentToken.spelling);
 				System.out.println("kind:" + currentToken.kind);
-                                System.out.println("line:" + currentToken.line);
-                                System.out.println("column:" + currentToken.column);
+				System.out.println("line:" + currentToken.line);
+				System.out.println("column:" + currentToken.column);
 
 				System.out.println();
 

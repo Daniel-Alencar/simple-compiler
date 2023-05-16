@@ -57,7 +57,7 @@ public class Token {
     }
   }
 
-    Token(byte currentKind, String toString, int currentLine, int currentColumn, String string) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+  Token(byte currentKind, String toString, int currentLine, int currentColumn, String string) {
+    throw new UnsupportedOperationException("Not supported yet.");
+  }
 }
