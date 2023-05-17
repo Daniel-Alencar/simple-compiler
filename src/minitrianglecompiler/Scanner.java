@@ -1,4 +1,5 @@
 package minitrianglecompiler;
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -7,8 +8,9 @@ import java.io.IOException;
  * @author
  */
 public class Scanner {
-	public FileReader fileReader;
+	public BufferedReader fileReader;
 
+	private int counterToMarkCharacter;
 	private char currentChar;
 
 	private byte currentKind;
@@ -18,12 +20,15 @@ public class Scanner {
 	private int currentColumn;
 
 	public Scanner(String pathToFile) {
+		counterToMarkCharacter = 0;
 		try {
 			String currentDirectory = System.getProperty("user.dir");
 
-			FileReader fileReader = new FileReader(
+			FileReader poorFileReader = new FileReader(
 				currentDirectory + pathToFile
 			);
+			BufferedReader fileReader = new BufferedReader(poorFileReader);
+			
 			int character;
 			// Lê o arquivo caractere por caractere
 			if((character = fileReader.read()) != -1) {
@@ -37,8 +42,12 @@ public class Scanner {
 		}
 	}
 
-	public boolean isEOF() throws IOException {		
+	public boolean isEOF() throws IOException {	
+		fileReader.mark(counterToMarkCharacter);
+		counterToMarkCharacter++;
+
 		if(fileReader.read() != -1) {
+			fileReader.reset();
 			return false;
 		}
 		return true;
@@ -53,7 +62,7 @@ public class Scanner {
 			currentColumn = 1;
 			break;
 		case '\t':
-			// Incrementar a coluna por 4, por exemplo
+			// Incrementar a coluna por 4
 			currentColumn += 4;
 			break;
 		default:
