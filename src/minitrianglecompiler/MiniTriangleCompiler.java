@@ -12,6 +12,7 @@ public class MiniTriangleCompiler {
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner("/test/test.txt");
 		int counter = 0;
+		
 		try {
 			do {
 				Token currentToken = scanner.scan();

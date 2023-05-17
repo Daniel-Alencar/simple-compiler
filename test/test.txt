@@ -1,5 +1,6 @@
-let variable := 750;
+var variable := 750;
 
-if(variable = 750) {
-	variable := 500;
-}
+if(variable <> 750)
+	begin
+		variable := 500;
+	end
