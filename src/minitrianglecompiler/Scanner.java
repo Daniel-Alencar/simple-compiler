@@ -33,7 +33,6 @@ public class Scanner {
 			// Lê o arquivo caractere por caractere
 			if((character = fileReader.read()) != -1) {
 				this.currentChar = (char)character;
-				System.out.println("Caractere: " + this.currentChar);
 			}
 			this.fileReader = fileReader;
 
@@ -73,7 +72,6 @@ public class Scanner {
 		try {
 			if((character = fileReader.read()) != -1) {
 				this.currentChar = (char)character;
-				System.out.println("Caractere: " + this.currentChar);
 			}
 		}	catch(Exception e) {
 			System.out.println(e.getMessage());
