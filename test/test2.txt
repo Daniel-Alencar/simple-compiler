@@ -1,5 +1,3 @@
-var variable := 750;
-
 if(variable <> 750)
 	begin
 		variable := 500;

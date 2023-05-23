@@ -322,21 +322,21 @@ public class Scanner {
 			case '!':
 				takeIt();
 
-				while(isGraphicCaracter(currentChar)) {
+				while(currentChar != '\n') {
 					takeIt();
 				}
-				take('\n');
 				break;
 
 			case ' ':
 			case '\n':
+			case '\t':
 				takeIt();
 				break;
 		}
 	}
 
 	public Token scan() {
-		while(currentChar == '!' || currentChar == ' ' || currentChar == '\n') {
+		while(currentChar == '!' || currentChar == ' ' || currentChar == '\n' || currentChar == '\t') {
 			scanSeparator();
 		}
 		currentSpelling = new StringBuffer("");

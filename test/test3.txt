@@ -1,0 +1,17 @@
+var variable := 13.750;
+var anothervariable := 75;
+
+if(variable <> 750)
+	begin
+		variable := 500;
+	end
+
+var a1,a2,a3;
+
+! Isso é um comentário
+
+... # @
+
+integer integernumber;
+real realnumber;
+boolean booleanvalue;
