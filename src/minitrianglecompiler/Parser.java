@@ -3,9 +3,7 @@ package minitrianglecompiler;
 public class Parser {
   private TerminalSymbol currentTerminal;
 
-  private void accept(TerminalSymbol expectedTerminal) {
-    
-  }
+  private void accept(TerminalSymbol expectedTerminal) {}
 
   private void parsePrograma();
   private void parseId();

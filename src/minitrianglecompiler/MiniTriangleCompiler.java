@@ -26,7 +26,7 @@ public class MiniTriangleCompiler {
 				System.out.println();
 
 				counter++;
-			} while(scanner.isEOF() == false && counter < 50);
+			} while(scanner.isEOF() == false);
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
