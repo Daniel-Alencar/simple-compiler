@@ -1,0 +1,164 @@
+<atribuição> ::=
+    <variável> := <expressão>
+first1() = {<id>}
+
+<bool-lit> ::=
+    true | false
+first1() = {true} U {false}
+
+<comando> ::=
+    <atribuição> | <condicional> | <iterativo> | <comando-composto>
+first1() = {<id>} U {if} U {while} U {begin}
+
+<comando-composto> ::=
+    begin <lista-de-comandos> end
+first1() = {begin}
+
+<condicional> ::=
+    if <expressão> then <comando> ( else <comando> | <vazio> )
+first1() = {if}
+
+<corpo> ::=
+    <declarações> <comando-composto>
+first1() = {var} U {var} U {begin}
+
+<declaração> ::=
+    <declaração-de-variável>
+first1() = {var}
+
+<declaração-de-variável> ::=
+    var <lista-de-ids> : <tipo>
+first1() = {var}
+
+<declarações> ::=
+    <declaração> ;
+    | <declarações> <declaração> ;
+    | <vazio>
+first1() = {var} U {var} U {begin}
+OBS.: Possui recursão à esquerda. Gramáticas com recursão à esquerda não são LL(k).
+
+<digito> ::=
+    0 | 1 | 2 | 3 | ... | 9
+first1() = {0,1,2,3,...,9}
+
+<expressão> ::=
+    <expressão-simples>
+    | <expressão-simples> <op-rel> <expressão-simples>
+first1() = {<id>, <literal>, "("} U {<id>, <literal>, "("}
+OBS.: Possui símbolos iguais.
+
+<expressão-simples> ::=
+    <expressão-simples> <op-ad> <termo>
+    | <termo>
+first1() = {<id>, <literal>, "("} U {<id>, <literal>, "("}
+OBS.: Possui símbolos iguais.
+
+<fator> ::=
+    <variável>
+    | <literal>
+    | "(" <expressão> ")"
+first1() = {<id>} U {<literal>} U {"("}
+
+<float-lit> ::= 
+    <int-lit> . <int-lit>
+    | <int-lit> .
+    | . <int-lit>
+first1() = {0,1,2,...,9} U {0,1,2,...,9} U {.}
+OBS.: Possui símbolos iguais.
+
+<id> ::=
+    <letra>
+    | <id> <letra>
+    | <id> <digito>
+first1() = {a,b,c,...,z}
+
+<int-lit> ::=
+    <digito>
+    | <int-lit> <digito>
+first1() = {0,1,2,...,9} U {0,1,2,...,9}
+OBS.: Possui símbolos iguais.
+
+<iterativo> ::=
+    while <expressão> do <comando>
+first1() = {while}
+
+<letra> ::=
+    a | b | c | ... | z
+first1() = {a,b,c,...,z}
+
+<lista-de-comandos> ::=
+    <comando> ;
+    | <lista-de-comandos> <comando> ;
+    | <vazio>
+first1() = {a,b,c,...,z} U {a,b,c,...,z} U {if, while, begin, end}
+OBS.: Possui símbolos iguais.
+
+<lista-de-ids> ::=
+    <id> | <lista-de-ids> , <id>
+first1() = {a,b,c,...,z} U {a,b,c,...,z}
+OBS.: Possui símbolos iguais.
+
+<literal> ::=
+    <bool-lit>
+    | <int-lit>
+    | <float-lit>
+first1() = {true, false} U {0,1,2,...,9} U {0,1,2,...,9,.}
+OBS.: Possui símbolos iguais.
+
+<op-ad> ::=
+    +
+    | -
+    | or
+first1() = {+, -, or}
+
+<op-mul> ::=
+    *
+    | /
+    | and
+first1() = {*, /, and}
+
+<op-rel> ::=
+    <
+    | >
+    | <=
+    | >=
+    | =
+    | <>
+first1() = {<, >, <=, >=, =, <>}
+
+<outros> ::=
+    !
+    | @
+    | #
+    | ...
+first1() = {!, @, #, ...}
+
+<programa> ::=
+    program <id> ; <corpo> .
+first1() = {program}
+
+<termo> ::=
+    <termo> <op-mul> <fator>
+    | <fator>
+first1() = {<id>, <literal>, "("} U {<id>, <literal>, "("}
+OBS.: Possui recursão à esquerda. Gramáticas com recursão à esquerda não são LL(k).
+
+<tipo> ::=
+    | <tipo-simples>
+first1() = {integer, real, boolean}
+
+<tipo-simples> ::=
+    integer
+    | real
+    | boolean
+first1() = {integer, real, boolean}
+
+<variável> ::=
+    <id>
+first1() = {a,b,c,...,z}
+
+
+
+<vazio> ::=
+    &
+first1() = {else, begin, end}
