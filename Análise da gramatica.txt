@@ -21,6 +21,7 @@ first1() = {if}
 <corpo> ::=
     <declarações> <comando-composto>
 first1() = {var} U {var} U {begin}
+OBS.: Possui símbolos iguais.
 
 <declaração> ::=
     <declaração-de-variável>

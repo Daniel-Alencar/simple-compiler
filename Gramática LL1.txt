@@ -1,0 +1,144 @@
+<atribuição> ::=
+    <variável> := <expressão>
+first1() = {<id>}
+
+<bool-lit> ::=
+    true | false
+first1() = {true} U {false}
+
+<comando> ::=
+    <atribuição> | <condicional> | <iterativo> | <comando-composto>
+first1() = {<id>} U {if} U {while} U {begin}
+
+<comando-composto> ::=
+    begin <lista-de-comandos> end
+first1() = {begin}
+
+<condicional> ::=
+    if <expressão> then <comando> ( else <comando> | <vazio> )
+first1() = {if}
+
+<corpo> ::=
+    <declarações> <comando-composto>
+first1() = {var, begin}
+
+<declaração> ::=
+    <declaração-de-variável>
+first1() = {var}
+
+<declaração-de-variável> ::=
+    var <lista-de-ids> : <tipo>
+first1() = {var}
+
+<declarações> ::=
+    (<declaração> ;)*
+first1() = {var, begin}
+
+<digito> ::=
+    0 | 1 | 2 | 3 | ... | 9
+first1() = {0,1,2,3,...,9}
+
+<expressão> ::=
+    <expressão-simples> (<op-rel> <expressão-simples> | <vazio>)
+first1() = {<id>, <literal>, "("}
+
+<expressão-simples> ::=
+    (<termo>)(<op-ad><termo>)*
+first1() = {<id>, <literal>, "("}
+
+<fator> ::=
+    <variável>
+    | <literal>
+    | "(" <expressão> ")"
+first1() = {<id>} U {<literal>} U {"("}
+
+<float-lit> ::= 
+    <int-lit> . (<int-lit> | <vazio>) 
+    | (. <int-lit>)
+first1() = {0,1,2,...,9} U {.}
+
+<id> ::=
+    <letra>
+    | <id> <letra>
+    | <id> <digito>
+first1() = {a,b,c,...,z}
+
+<int-lit> ::=
+    <digito>(<digito>)*
+first1() = {0,1,2,...,9}
+
+<iterativo> ::=
+    while <expressão> do <comando>
+first1() = {while}
+
+<letra> ::=
+    a | b | c | ... | z
+first1() = {a,b,c,...,z}
+
+<lista-de-comandos> ::=
+    (<comando> ;)*
+first1() = {a,b,c,...,z} U {if, while, begin, end}
+
+<lista-de-ids> ::=
+    <id>(<id>)*
+first1() = {a,b,c,...,z}
+
+<literal> ::=
+    <bool-lit>
+    | <int-lit>
+    | <float-lit>
+first1() = {<bool-lit>} U {<int-lit>} U {<float-lit>}
+
+<op-ad> ::=
+    +
+    | -
+    | or
+first1() = {+, -, or}
+
+<op-mul> ::=
+    *
+    | /
+    | and
+first1() = {*, /, and}
+
+<op-rel> ::=
+    <
+    | >
+    | <=
+    | >=
+    | =
+    | <>
+first1() = {<, >, <=, >=, =, <>}
+
+<outros> ::=
+    !
+    | @
+    | #
+    | ...
+first1() = {!, @, #, ...}
+
+<programa> ::=
+    program <id> ; <corpo> .
+first1() = {program}
+
+<termo> ::=
+    (<fator>)(<op-mul><fator>)*
+first1() = {<id>, <literal>, "("}
+
+<tipo> ::=
+    | <tipo-simples>
+first1() = {integer, real, boolean}
+
+<tipo-simples> ::=
+    integer
+    | real
+    | boolean
+first1() = {integer, real, boolean}
+
+<variável> ::=
+    <id>
+first1() = {a,b,c,...,z}
+
+<vazio> ::=
+    &
+first1() = {else, begin, end}
