@@ -2,10 +2,6 @@
     <variável> := <expressão>
 first1() = {<id>}
 
-<bool-lit> ::=
-    true | false
-first1() = {true} U {false}
-
 <comando> ::=
     <atribuição> | <condicional> | <iterativo> | <comando-composto>
 first1() = {<id>} U {if} U {while} U {begin}
@@ -34,10 +30,6 @@ first1() = {var}
     (<declaração> ;)*
 first1() = {var, begin}
 
-<digito> ::=
-    0 | 1 | 2 | 3 | ... | 9
-first1() = {0,1,2,3,...,9}
-
 <expressão> ::=
     <expressão-simples> (<op-rel> <expressão-simples> | <vazio>)
 first1() = {<id>, <literal>, "("}
@@ -52,40 +44,81 @@ first1() = {<id>, <literal>, "("}
     | "(" <expressão> ")"
 first1() = {<id>} U {<literal>} U {"("}
 
-<float-lit> ::= 
-    <int-lit> . (<int-lit> | <vazio>) 
-    | (. <int-lit>)
-first1() = {0,1,2,...,9} U {.}
-
-<id> ::=
-    <letra> ( <letra> | <digito> )*
-first1() = {a,b,c,...,z}
-
-<int-lit> ::=
-    <digito>(<digito>)*
-first1() = {0,1,2,...,9}
-
 <iterativo> ::=
     while <expressão> do <comando>
 first1() = {while}
+
+<lista-de-comandos> ::=
+    (<comando> ;)*
+first1() = {<id>} U {end}
+
+<lista-de-ids> ::=
+    <id>(<id>)*
+first1() = {<id>}
+
+<outros> ::=
+    !
+    | @
+    | #
+    | ...
+first1() = {!, @, #, ...}
+
+<programa> ::=
+    program <id> ; <corpo> .
+first1() = {program}
+
+<termo> ::=
+    (<fator>)(<op-mul><fator>)*
+first1() = {<id>, <literal>, "("}
+
+<tipo> ::=
+    <tipo-simples>
+first1() = {<tipo-simples>}
+
+<variável> ::=
+    <id>
+first1() = {<id>}
+
+=================================================
+AS REGRAS ABAIXO ESTÃO ABSTRAÍDAS NOS TOKENS
+=================================================
+
+<digito> ::=
+    0 | 1 | 2 | 3 | ... | 9
+first1() = {0,1,2,3,...,9}
 
 <letra> ::=
     a | b | c | ... | z
 first1() = {a,b,c,...,z}
 
-<lista-de-comandos> ::=
-    (<comando> ;)*
-first1() = {a,b,c,...,z} U {end}
+<tipo-simples> ::=
+    integer
+    | real
+    | boolean
+first1() = {integer, real, boolean}
 
-<lista-de-ids> ::=
-    <id>(<id>)*
-first1() = {a,b,c,...,z}
+<bool-lit> ::=
+    true | false
+first1() = {true} U {false}
+
+<int-lit> ::=
+    <digito>(<digito>)*
+first1() = {0,1,2,...,9}
+
+<float-lit> ::= 
+    <int-lit> . (<int-lit> | <vazio>) 
+    | (. <int-lit>)
+first1() = {0,1,2,...,9} U {.}
 
 <literal> ::=
     <bool-lit>
     | <int-lit>
     | <float-lit>
 first1() = {<bool-lit>} U {<int-lit>} U {<float-lit>}
+
+<id> ::=
+    <letra> ( <letra> | <digito> )*
+first1() = {a,b,c,...,z}
 
 <op-ad> ::=
     +
@@ -107,32 +140,3 @@ first1() = {*, /, and}
     | =
     | <>
 first1() = {<, >, <=, >=, =, <>}
-
-<outros> ::=
-    !
-    | @
-    | #
-    | ...
-first1() = {!, @, #, ...}
-
-<programa> ::=
-    program <id> ; <corpo> .
-first1() = {program}
-
-<termo> ::=
-    (<fator>)(<op-mul><fator>)*
-first1() = {<id>, <literal>, "("}
-
-<tipo> ::=
-    | <tipo-simples>
-first1() = {integer, real, boolean}
-
-<tipo-simples> ::=
-    integer
-    | real
-    | boolean
-first1() = {integer, real, boolean}
-
-<variável> ::=
-    <id>
-first1() = {a,b,c,...,z}
