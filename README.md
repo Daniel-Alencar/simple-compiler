@@ -1,8 +1,5 @@
 ## Ordem de execução
-### Análise léxica
-- Identificar a sintaxe da linguagem
-- Conseguir separar os tokens e separadores
-- Criar análise léxica (com base na análise léxica do mini-triangle)
-### Análise sintática
-- Entender a gramática dada pelo professor da linguagem
-- Converter a gramática para LL(1)
+### Problemas para resolver
+- Retirar TOKEN.OPERATOR e substituir por: op-ad, op-mul e op-rel.
+- Retirar TOKEN.LITERAL e substituir por: int-lit, float-lit e bool-lit.
+- Mudar a lógica de identificação do TOKEN.ELLIPSIS
