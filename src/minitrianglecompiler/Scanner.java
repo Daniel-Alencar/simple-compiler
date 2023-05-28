@@ -132,15 +132,31 @@ public class Scanner {
 		return false;
 	}
 
-	protected boolean isBasicOperator(char character) {
+	protected boolean isBasicRelationalOperator(char character) {
 		switch(character) {
-			case '+':
-			case '-':
-			case '*':
-			case '/':
 			case '<':
 			case '>':
 			case '=':
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	protected boolean isBasicAditionalOperator(char character) {
+		switch(character) {
+			case '+':
+			case '-':
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	protected boolean isBasicMultiplicationalOperator(char character) {
+		switch(character) {
+			case '*':
+			case '/':
 				return true;
 			default:
 				return false;
@@ -190,10 +206,11 @@ public class Scanner {
 				currentSpelling.toString().equals("false")) {
 					return Token.BOOLLITERAL;
 			}
-			if(
-				currentSpelling.toString().equals("or") ||
-				currentSpelling.toString().equals("and")) {
-					return Token.OPERATOR;
+			if(currentSpelling.toString().equals("or")) {
+				return Token.ADITIONALOPERATOR;
+			}
+			if(currentSpelling.toString().equals("and")) {
+				return Token.MULTIPLICATIONALOPERATOR;
 			}
 			if(isSimpleType(currentSpelling.toString())) {
 				return Token.TIPOSIMPLES;
@@ -290,23 +307,31 @@ public class Scanner {
 			return Token.HASHTAG;
 		}
 
-		if(isBasicOperator(currentChar)) {
+		if(isBasicRelationalOperator(currentChar)) {
 			if(currentChar == '<') {
 				takeIt();
 				if(currentChar == '=' || currentChar == '>') {
 					takeIt();
 				}
-				return Token.OPERATOR;
+				return Token.RELATIONALOPERATOR;
 
 			} else if(currentChar == '>') {
 				takeIt();
 				if(currentChar == '=') {
 					takeIt();
 				}
-				return Token.OPERATOR;
+				return Token.RELATIONALOPERATOR;
 			}
 			takeIt();
-			return Token.OPERATOR;
+			return Token.RELATIONALOPERATOR;
+		}
+
+		if(isBasicAditionalOperator(currentChar)) {
+			return Token.ADITIONALOPERATOR;
+		}
+
+		if(isBasicMultiplicationalOperator(currentChar)) {
+			return Token.MULTIPLICATIONALOPERATOR;
 		}
 
 		if(currentChar == '\000') {

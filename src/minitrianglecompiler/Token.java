@@ -21,8 +21,8 @@ public class Token {
 
     EXCLAMATION = 19, ARROBA = 20, HASHTAG = 21, ELLIPSIS = 22,
 
-    OPERATOR = 23, TIPOSIMPLES = 24,
-    EOT = 25, ERROR = 26;
+    RELATIONALOPERATOR = 23, ADITIONALOPERATOR = 24, MULTIPLICATIONALOPERATOR = 25, TIPOSIMPLES = 26,
+    EOT = 27, ERROR = 28;
 
   private final static String[] spellings = {
     "<identifier>",
@@ -34,7 +34,7 @@ public class Token {
 
     "!", "@", "#", "...",
 
-    "<operator>", "<tipo-simples>",
+    "<op-rel>", "<op-ad>", "<op-mul>", "<tipo-simples>",
     "<eot>", "<error>"
   };
 
