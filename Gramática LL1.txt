@@ -58,9 +58,7 @@ first1() = {<id>} U {<literal>} U {"("}
 first1() = {0,1,2,...,9} U {.}
 
 <id> ::=
-    <letra>
-    | <id> <letra>
-    | <id> <digito>
+    <letra> ( <letra> | <digito> )*
 first1() = {a,b,c,...,z}
 
 <int-lit> ::=
@@ -77,7 +75,7 @@ first1() = {a,b,c,...,z}
 
 <lista-de-comandos> ::=
     (<comando> ;)*
-first1() = {a,b,c,...,z} U {if, while, begin, end}
+first1() = {a,b,c,...,z} U {end}
 
 <lista-de-ids> ::=
     <id>(<id>)*
@@ -138,7 +136,3 @@ first1() = {integer, real, boolean}
 <variável> ::=
     <id>
 first1() = {a,b,c,...,z}
-
-<vazio> ::=
-    &
-first1() = {else, begin, end}
