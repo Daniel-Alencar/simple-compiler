@@ -15,20 +15,20 @@ public class Token {
     IDENTIFIER = 0,
     BOOLLITERAL = 1, INTLITERAL = 2, FLOATLITERAL = 3,
 
-    BEGIN = 4, IF = 5, THEN = 6, ELSE = 7, VAR = 8, WHILE = 9, DO = 10, END = 11,
-    BECOMES = 12, LPAREN = 13, RPAREN = 14, COLON = 15, SEMICOLON = 16,
-    COMMA = 17, PERIOD = 18,
+    BEGIN = 4, IF = 5, THEN = 6, ELSE = 7, VAR = 8, WHILE = 9, DO = 10, PROGRAM = 11, END = 12,
+    BECOMES = 13, LPAREN = 14, RPAREN = 15, COLON = 16, SEMICOLON = 17,
+    COMMA = 18, PERIOD = 19,
 
-    EXCLAMATION = 19, ARROBA = 20, HASHTAG = 21, ELLIPSIS = 22,
+    EXCLAMATION = 20, ARROBA = 21, HASHTAG = 22, ELLIPSIS = 23,
 
-    RELATIONALOPERATOR = 23, ADITIONALOPERATOR = 24, MULTIPLICATIONALOPERATOR = 25, TIPOSIMPLES = 26,
-    EOT = 27, ERROR = 28;
+    RELATIONALOPERATOR = 24, ADITIONALOPERATOR = 25, MULTIPLICATIONALOPERATOR = 26, TIPOSIMPLES = 27,
+    EOT = 28, ERROR = 29;
 
   private final static String[] spellings = {
     "<identifier>",
     "<bool-literal>", "<int-literal>", "<float-literal>",
 
-    "begin", "if", "then", "else", "var", "while", "do", "end",
+    "begin", "if", "then", "else", "var", "while", "do","program", "end",
     ":=", "(", ")", ":", ";",
     ",", ".",
 

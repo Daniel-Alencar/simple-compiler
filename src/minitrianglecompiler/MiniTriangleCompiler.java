@@ -1,4 +1,5 @@
 package minitrianglecompiler;
+import java.util.ArrayList;
 
 /**
  *
@@ -10,12 +11,14 @@ public class MiniTriangleCompiler {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-		Scanner scanner = new Scanner("/test/test3.txt");
+		Scanner scanner = new Scanner("/test/test0.txt");
 		int counter = 0;
+		ArrayList<Token> arrayOfTokens = new ArrayList<>();
 
 		try {
 			do {
 				Token currentToken = scanner.scan();
+				arrayOfTokens.add(counter, currentToken);
 				
 				System.out.println("TOKEN:");
 				System.out.println("speeling:" + currentToken.spelling);
@@ -30,6 +33,11 @@ public class MiniTriangleCompiler {
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
+
+		System.out.println("Length of array: " + arrayOfTokens.size() + "\n");
+
+		Parser sintaticParser = new Parser(arrayOfTokens);
+		sintaticParser.parse();
 
 	}
 }

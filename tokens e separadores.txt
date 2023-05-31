@@ -1,8 +1,8 @@
 <Token> ::=
   <id> | <literal> |
   
-  begin | end | if | then |
-  else | var | while | do |
+  begin | if | then |
+  else | var | while | do | program | end
   := | ( | ) | : | ; | , | . |
   <outros> | <op-ad> | <op-mul> | <op-rel> |
   <tipo-simples>
@@ -33,6 +33,6 @@ OBS:
 <Comment> ::= !CommentLine | EOL
 <CommentLine> ::= Graphic CommentLine | Graphic
 
-OBS>:
+OBS.:
 - EOL: end-of-line character
 - Graphic: any printable character or space

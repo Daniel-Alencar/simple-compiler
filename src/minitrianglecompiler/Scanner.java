@@ -201,6 +201,9 @@ public class Scanner {
 			while(isLetter(currentChar) || isDigit(currentChar)) {
 				takeIt();
 			}
+			if(currentSpelling.toString().equals("program")) {
+				return Token.PROGRAM;
+			}
 			if(
 				currentSpelling.toString().equals("true") || 
 				currentSpelling.toString().equals("false")) {
