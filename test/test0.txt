@@ -1,6 +1,6 @@
 program codigo;
 
-var variable : real
+var variable : real;
 begin
 
 end

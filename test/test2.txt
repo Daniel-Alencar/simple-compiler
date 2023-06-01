@@ -1,4 +1,0 @@
-if(variable <> 750)
-	begin
-		variable := 500;
-	end

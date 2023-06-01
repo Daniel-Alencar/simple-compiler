@@ -15,17 +15,24 @@ public class Parser {
   }
 
   private void accept(int tokenId) {
+    System.out.println("Current Token on Array: " + arrayOfTokens.get(currentIndex).spelling);
+    System.out.println("TokenId: " + tokenId);
     if(tokenId == currentTokenId) {
       currentIndex++;
-      currentTokenId = this.arrayOfTokens.get(currentIndex).kind;
+      if(this.arrayOfTokens.size() > currentIndex) {
+        currentTokenId = this.arrayOfTokens.get(currentIndex).kind;
+      }
     } else {
-      showError("no accept");
+      showError("Not accepted\n");
     }
   }
 
   private void acceptIt() {
+    System.out.println("Current Token on Array: " + arrayOfTokens.get(currentIndex).spelling);
     currentIndex++;
-    currentTokenId = this.arrayOfTokens.get(currentIndex).kind;
+    if(this.arrayOfTokens.size() > currentIndex) {
+      currentTokenId = this.arrayOfTokens.get(currentIndex).kind;
+    }
   }
 
   private void showError(String message) {
@@ -206,8 +213,5 @@ public class Parser {
 
   public void parse() {
     parse_programa();
-    if(currentIndex >= arrayOfTokens.size()) {
-      showError("parse");
-    }
   }
 }

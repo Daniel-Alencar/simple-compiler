@@ -11,7 +11,7 @@ public class MiniTriangleCompiler {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-		Scanner scanner = new Scanner("/test/test0.txt");
+		Scanner scanner = new Scanner("/test/test1.txt");
 		int counter = 0;
 		ArrayList<Token> arrayOfTokens = new ArrayList<>();
 
@@ -29,7 +29,7 @@ public class MiniTriangleCompiler {
 				System.out.println();
 
 				counter++;
-			} while(scanner.isEOF() == false);
+			} while(scanner.isEOF() == false && counter < 50);
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
