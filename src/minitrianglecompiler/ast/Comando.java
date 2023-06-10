@@ -1,3 +1,3 @@
 package minitrianglecompiler.ast;
 
-public abstract class Comando extends AST {}
+public class Comando extends AST {}

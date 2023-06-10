@@ -2,6 +2,8 @@ package minitrianglecompiler.analise_sintatica;
 import java.util.ArrayList;
 
 import minitrianglecompiler.Token;
+import minitrianglecompiler.ast.*;
+import minitrianglecompiler.visitor.*;
 
 public class Parser {
   private int currentTokenId;
@@ -52,7 +54,7 @@ public class Parser {
     parse_expressao();
   }
 
-  private void parse_comando() {
+  private Comando parse_comando() {
     switch(currentTokenId) {
       case Token.IDENTIFIER:
         parse_atribuicao();
@@ -69,6 +71,7 @@ public class Parser {
       default:
         showError("parse comando");
     }
+    return new Comando();
   }
 
   private void parse_comandoComposto() {
@@ -78,15 +81,20 @@ public class Parser {
   }
 
   private void parse_condicional() {
-    accept(Token.IF);
-    parse_expressao();
-    accept(Token.THEN);
-    parse_comando();
+    ComandoCondicional comandoCondicionalAST;
 
+    accept(Token.IF);
+    Expressao expressao = parse_expressao();
+    accept(Token.THEN);
+    Comando comando1 = parse_comando();
+
+    Comando comando2 = null;
     if(currentTokenId == Token.ELSE) {
       acceptIt();
-      parse_comando();
+      comando2 = parse_comando();
     }
+
+    comandoCondicionalAST = new ComandoCondicional(expressao, comando1, comando2);
   }
 
   private void parse_corpo() {
@@ -112,12 +120,14 @@ public class Parser {
     }
   }
 
-  private void parse_expressao() {
+  private Expressao parse_expressao() {
     parse_expressaoSimples();
     if(currentTokenId == Token.RELATIONALOPERATOR) {
       accept(Token.RELATIONALOPERATOR);
       parse_expressao();
     }
+
+    return new Expressao();
   }
 
   private void parse_expressaoSimples() {
