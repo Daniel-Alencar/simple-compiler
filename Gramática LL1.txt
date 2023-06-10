@@ -17,7 +17,7 @@ first1() = {if}
 <corpo> ::=
     <declarações> <comando-composto>
 first1() = {var, begin}
-Declaracoes
+
 <declaração> ::=
     <declaração-de-variável>
 first1() = {var}

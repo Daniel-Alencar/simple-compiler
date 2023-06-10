@@ -2,7 +2,6 @@ package minitrianglecompiler.analise_sintatica;
 import java.util.ArrayList;
 
 import minitrianglecompiler.Token;
-import minitrianglecompiler.ast.*;
 import minitrianglecompiler.visitor.*;
 
 public class Parser {
@@ -48,86 +47,106 @@ public class Parser {
   }
 
   // Regras da gramática LL1 como métodos
-  private void parse_atribuicao() {
-    parse_variavel();
+  private nodeComandoAtribuicao parse_atribuicao() {
+    nodeComandoAtribuicao comandoAtribuicao = new nodeComandoAtribuicao();
+
+    comandoAtribuicao.variavel = parse_variavel();
     accept(Token.BECOMES);
-    parse_expressao();
+    comandoAtribuicao.expressao = parse_expressao();
+
+    return comandoAtribuicao;
   }
 
-  private Comando parse_comando() {
+  private nodeComando parse_comando() {
+    nodeComando comando;
+
     switch(currentTokenId) {
       case Token.IDENTIFIER:
-        parse_atribuicao();
+        comando = parse_atribuicao();
         break;
       case Token.IF:
-        parse_condicional();
+        comando = parse_condicional();
         break;
       case Token.WHILE:
-        parse_iterativo();
+        comando = parse_iterativo();
         break;
       case Token.BEGIN:
-        parse_comandoComposto();
+        comando = parse_comandoComposto();
         break;
       default:
+        comando = null;
         showError("parse comando");
     }
-    return new Comando();
+    return comando;
   }
 
-  private void parse_comandoComposto() {
+  private nodeComandoComposto parse_comandoComposto() {
+    nodeComandoComposto comandoComposto = new nodeComandoComposto();
+
     accept(Token.BEGIN);
-    parse_listaDeComandos();
+    comandoComposto.comandos = parse_listaDeComandos();
     accept(Token.END);
+
+    return comandoComposto;
   }
 
   private void parse_condicional() {
-    ComandoCondicional comandoCondicionalAST;
-
     accept(Token.IF);
-    Expressao expressao = parse_expressao();
+    parse_expressao();
     accept(Token.THEN);
-    Comando comando1 = parse_comando();
+    parse_comando();
 
-    Comando comando2 = null;
     if(currentTokenId == Token.ELSE) {
       acceptIt();
-      comando2 = parse_comando();
+      parse_comando();
     }
-
-    comandoCondicionalAST = new ComandoCondicional(expressao, comando1, comando2);
   }
 
-  private void parse_corpo() {
-    parse_declaracoes();
-    parse_comandoComposto();
+  private nodeCorpo parse_corpo() {
+    nodeCorpo corpo = new nodeCorpo();
+
+    corpo.declaracoes = parse_declaracoes();
+    corpo.comandoComposto = parse_comandoComposto();
+
+    return corpo;
   }
 
-  private void parse_declaracao() {
-    parse_declaracaoDeVariavel();
+  private nodeDeclaracao parse_declaracao() {
+    nodeDeclaracao declaracao = new nodeDeclaracao();
+    declaracao.declaracaoDeVariavel = parse_declaracaoDeVariavel();
+
+    return declaracao;
   }
 
-  private void parse_declaracaoDeVariavel() {
+  private nodeDeclaracaoDeVariavel parse_declaracaoDeVariavel() {
+    nodeDeclaracaoDeVariavel declaracaoDeVariavel = new nodeDeclaracaoDeVariavel();
+
     accept(Token.VAR);
-    parse_listaDeIds();
+    declaracaoDeVariavel.IDs = parse_listaDeIds();
     accept(Token.COLON);
-    parse_tipo();
+    declaracaoDeVariavel.tipo = parse_tipo();
+
+    return declaracaoDeVariavel;
   }
 
-  private void parse_declaracoes() {
+  private nodeDeclaracoes parse_declaracoes() {
+    nodeDeclaracoes declaracoes = new nodeDeclaracoes();
+    declaracoes.declaracoes = new ArrayList<>();
+    
     while(currentTokenId == Token.VAR) {
-      parse_declaracao();
+      declaracoes.declaracoes.add(parse_declaracao());
       accept(Token.SEMICOLON);
     }
+
+    return declaracoes;
   }
 
-  private Expressao parse_expressao() {
+  private void parse_expressao() {
     parse_expressaoSimples();
     if(currentTokenId == Token.RELATIONALOPERATOR) {
       accept(Token.RELATIONALOPERATOR);
       parse_expressao();
     }
-
-    return new Expressao();
   }
 
   private void parse_expressaoSimples() {
@@ -166,19 +185,29 @@ public class Parser {
     parse_comando();
   }
 
-  private void parse_listaDeComandos() {
+  private ArrayList<nodeComando> parse_listaDeComandos() {
+    ArrayList<nodeComando> comandos = new ArrayList<>();
+
     while(currentTokenId == Token.IDENTIFIER) {
-      parse_comando();
+      comandos.add(parse_comando());
       accept(Token.SEMICOLON);
     }
+    
+    return comandos;
   }
 
-  private void parse_listaDeIds() {
+  private ArrayList<nodeID> parse_listaDeIds() {
+    ArrayList<nodeID> IDs = new ArrayList<>();
+
     accept(Token.IDENTIFIER);
     while(currentTokenId == Token.COMMA) {
       acceptIt();
       accept(Token.IDENTIFIER);
+
+      IDs.add(new nodeID());
     }
+
+    return IDs;
   }
 
   private void parse_outros() {
@@ -194,12 +223,16 @@ public class Parser {
     }
   }
 
-  private void parse_programa() {
+  private nodePrograma parse_programa() {
+    nodePrograma programaAST = new nodePrograma();
+
     accept(Token.PROGRAM);
     accept(Token.IDENTIFIER);
     accept(Token.SEMICOLON);
-    parse_corpo();
+    programaAST.corpo = parse_corpo();
     accept(Token.PERIOD);
+
+    return programaAST;
   }
 
   private void parse_termo() {
@@ -210,12 +243,20 @@ public class Parser {
     }
   }
 
-  private void parse_tipo() {
+  private nodeTipo parse_tipo() {
+    nodeTipo tipo = new nodeTipo();
     accept(Token.TIPOSIMPLES);
+
+    return tipo;
   }
 
-  private void parse_variavel() {
+  private nodeVariavel parse_variavel() {
+    nodeVariavel variavel = new nodeVariavel();
+    variavel.ID = new nodeID();
+
     accept(Token.IDENTIFIER);
+
+    return variavel;
   }
 
   public void parse() {
