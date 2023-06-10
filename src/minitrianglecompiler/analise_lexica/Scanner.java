@@ -1,7 +1,9 @@
-package minitrianglecompiler;
+package minitrianglecompiler.analise_lexica;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+
+import minitrianglecompiler.Token;
 
 /**
  *

@@ -1,6 +1,9 @@
 package minitrianglecompiler;
 import java.util.ArrayList;
 
+import minitrianglecompiler.analise_lexica.Scanner;
+import minitrianglecompiler.analise_sintatica.Parser;
+
 /**
  *
  * @author

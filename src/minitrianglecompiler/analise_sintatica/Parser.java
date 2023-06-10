@@ -1,5 +1,7 @@
-package minitrianglecompiler;
+package minitrianglecompiler.analise_sintatica;
 import java.util.ArrayList;
+
+import minitrianglecompiler.Token;
 
 public class Parser {
   private int currentTokenId;
@@ -7,7 +9,7 @@ public class Parser {
   private int currentIndex;
   private ArrayList<Token> arrayOfTokens;
 
-  Parser(ArrayList<Token> arrayList) {
+  public Parser(ArrayList<Token> arrayList) {
     this.currentIndex = 0;
     this.arrayOfTokens = arrayList;
 
