@@ -330,10 +330,12 @@ public class Scanner {
 		}
 
 		if(isBasicAditionalOperator(currentChar)) {
+			takeIt();
 			return Token.ADITIONALOPERATOR;
 		}
 
 		if(isBasicMultiplicationalOperator(currentChar)) {
+			takeIt();
 			return Token.MULTIPLICATIONALOPERATOR;
 		}
 

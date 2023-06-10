@@ -16,7 +16,7 @@ public class Parser {
 
   private void accept(int tokenId) {
     System.out.println("Current Token on Array: " + arrayOfTokens.get(currentIndex).spelling);
-    System.out.println("TokenId: " + tokenId);
+    
     if(tokenId == currentTokenId) {
       currentIndex++;
       if(this.arrayOfTokens.size() > currentIndex) {
@@ -112,14 +112,9 @@ public class Parser {
 
   private void parse_expressao() {
     parse_expressaoSimples();
-    switch(currentTokenId) {
-      case Token.RELATIONALOPERATOR:
-        accept(Token.RELATIONALOPERATOR);
-        parse_expressao();
-        break;
-      
-      default:
-        System.out.println("Erro sintático!");
+    if(currentTokenId == Token.RELATIONALOPERATOR) {
+      accept(Token.RELATIONALOPERATOR);
+      parse_expressao();
     }
   }
 
