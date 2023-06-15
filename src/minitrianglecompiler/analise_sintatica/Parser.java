@@ -2,6 +2,8 @@ package minitrianglecompiler.analise_sintatica;
 import java.util.ArrayList;
 
 import minitrianglecompiler.Token;
+import minitrianglecompiler.ast.OperadorAditivo;
+import minitrianglecompiler.ast.OperadorMultiplicativo;
 import minitrianglecompiler.visitor.*;
 
 public class Parser {
@@ -90,16 +92,20 @@ public class Parser {
     return comandoComposto;
   }
 
-  private void parse_condicional() {
+  private nodeComandoCondicional parse_condicional() {
+
+    nodeComandoCondicional condicional = new nodeComandoCondicional();
+
     accept(Token.IF);
     parse_expressao();
     accept(Token.THEN);
-    parse_comando();
+    condicional.comando1 = parse_comando();
 
     if(currentTokenId == Token.ELSE) {
       acceptIt();
-      parse_comando();
+      condicional.comando2 = parse_comando();
     }
+    return condicional;
   }
 
   private nodeCorpo parse_corpo() {
@@ -141,22 +147,42 @@ public class Parser {
     return declaracoes;
   }
 
-  private void parse_expressao() {
-    parse_expressaoSimples();
-    if(currentTokenId == Token.RELATIONALOPERATOR) {
-      accept(Token.RELATIONALOPERATOR);
-      parse_expressao();
-    }
-  }
+  // FIXME: provavelmente eu errei alguma coisa aqui
+  private nodeExpressao parse_expressao() {
+  nodeExpressao expressao = new nodeExpressao();
 
-  private void parse_expressaoSimples() {
-    parse_termo();
-    while(currentTokenId == Token.ADITIONALOPERATOR) {
-      accept(Token.ADITIONALOPERATOR);
-      parse_termo();
-    }
+  expressao.expressaoSimples1 = parse_expressaoSimples();
+  if (currentTokenId == Token.RELATIONALOPERATOR) {
+    nodeOperadorRelacional operadorRelacional = new nodeOperadorRelacional();
+    operadorRelacional.operador = currentTokenId;
+    expressao.operadorRelacional = operadorRelacional;
+    accept(Token.RELATIONALOPERATOR);
+    expressao.expressaoSimples2 = parse_expressao().expressaoSimples1;
   }
+  
+  return expressao; 
+}
 
+private nodeExpressaoSimples parse_expressaoSimples() {
+  nodeExpressaoSimples expressaoSimples = new nodeExpressaoSimples();
+  expressaoSimples.termo = parse_termo();
+  expressaoSimples.operadoresAditivos = new ArrayList<nodeOperadorAditivo>();
+  expressaoSimples.termos = new ArrayList<nodeTermo>();
+  
+  while (currentTokenId == Token.ADITIONALOPERATOR) {
+    nodeOperadorAditivo operadorAditivo = new nodeOperadorAditivo();
+    operadorAditivo.operador = currentTokenId;
+    expressaoSimples.operadoresAditivos.add(operadorAditivo);
+    acceptIt();
+    
+    expressaoSimples.termos.add(parse_termo());
+  }
+  
+  return expressaoSimples;
+}
+
+
+// TODO:
   private void parse_fator() {
     switch(currentTokenId) {
       case Token.IDENTIFIER:
@@ -178,7 +204,7 @@ public class Parser {
     }
   }
 
-  private void parse_iterativo() {
+  private  void parse_iterativo() {
     accept(Token.WHILE);
     parse_expressao();
     accept(Token.DO);
@@ -217,7 +243,7 @@ public class Parser {
       case Token.HASHTAG:
       case Token.ELLIPSIS:
         acceptIt();
-      
+        break;
       default:
         showError("parse outros");
     }
@@ -235,12 +261,20 @@ public class Parser {
     return programaAST;
   }
 
-  private void parse_termo() {
-    parse_fator();
+  private nodeTermo parse_termo() {
+    nodeTermo termo = new nodeTermo();
+    termo.fatores = new ArrayList<nodeFator>();
+    termo.operadoresMultiplicativos = new ArrayList<nodeOperadorMultiplicativo>();
+
+    termo.fator = parse_fator();
     while(currentTokenId == Token.MULTIPLICATIONALOPERATOR) {
+      nodeOperadorMultiplicativo operadorMultiplicativo = new nodeOperadorMultiplicativo();
+      operadorMultiplicativo.operador = currentTokenId;
+      termo.operadoresMultiplicativos.add(operadorMultiplicativo);
       acceptIt();
-      parse_fator();
+      termo.operadoresMultiplicativos.add(parse_fator());
     }
+    return termo;
   }
 
   private nodeTipo parse_tipo() {
