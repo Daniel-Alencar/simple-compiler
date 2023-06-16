@@ -1,3 +1,3 @@
 package minitrianglecompiler.visitor;
 
-public abstract class nodeFator {}
+public class nodeFator {}

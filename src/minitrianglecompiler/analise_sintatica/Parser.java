@@ -76,8 +76,8 @@ public class Parser {
         comando = parse_comandoComposto();
         break;
       default:
-        comando = null;
         showError("parse comando");
+        comando = null;
     }
     return comando;
   }
@@ -147,68 +147,82 @@ public class Parser {
     return declaracoes;
   }
 
-  // FIXME: provavelmente eu errei alguma coisa aqui
   private nodeExpressao parse_expressao() {
-  nodeExpressao expressao = new nodeExpressao();
+    nodeExpressao expressao = new nodeExpressao();
 
-  expressao.expressaoSimples1 = parse_expressaoSimples();
-  if (currentTokenId == Token.RELATIONALOPERATOR) {
-    nodeOperadorRelacional operadorRelacional = new nodeOperadorRelacional();
-    operadorRelacional.operador = currentTokenId;
-    expressao.operadorRelacional = operadorRelacional;
-    accept(Token.RELATIONALOPERATOR);
-    expressao.expressaoSimples2 = parse_expressao().expressaoSimples1;
-  }
-  
-  return expressao; 
-}
+    expressao.expressaoSimples1 = parse_expressaoSimples();
+    expressao.operadorRelacional = null;
+    expressao.expressaoSimples2 = null;
 
-private nodeExpressaoSimples parse_expressaoSimples() {
-  nodeExpressaoSimples expressaoSimples = new nodeExpressaoSimples();
-  expressaoSimples.termo = parse_termo();
-  expressaoSimples.operadoresAditivos = new ArrayList<nodeOperadorAditivo>();
-  expressaoSimples.termos = new ArrayList<nodeTermo>();
-  
-  while (currentTokenId == Token.ADITIONALOPERATOR) {
-    nodeOperadorAditivo operadorAditivo = new nodeOperadorAditivo();
-    operadorAditivo.operador = currentTokenId;
-    expressaoSimples.operadoresAditivos.add(operadorAditivo);
-    acceptIt();
+    if (currentTokenId == Token.RELATIONALOPERATOR) {
+      nodeOperadorRelacional operadorRelacional = new nodeOperadorRelacional();
+
+      operadorRelacional.operador = currentTokenId;
+      accept(Token.RELATIONALOPERATOR);
+      expressao.operadorRelacional = operadorRelacional;
+
+      expressao.expressaoSimples2 = parse_expressaoSimples();
+    }
     
-    expressaoSimples.termos.add(parse_termo());
+    return expressao; 
   }
-  
-  return expressaoSimples;
-}
 
+  private nodeExpressaoSimples parse_expressaoSimples() {
+    nodeExpressaoSimples expressaoSimples = new nodeExpressaoSimples();
+    expressaoSimples.termo = parse_termo();
+    expressaoSimples.operadoresAditivos = new ArrayList<nodeOperadorAditivo>();
+    expressaoSimples.termos = new ArrayList<nodeTermo>();
+    
+    while (currentTokenId == Token.ADITIONALOPERATOR) {
+      nodeOperadorAditivo operadorAditivo = new nodeOperadorAditivo();
+      operadorAditivo.operador = currentTokenId;
+      expressaoSimples.operadoresAditivos.add(operadorAditivo);
+      acceptIt();
+      
+      expressaoSimples.termos.add(parse_termo());
+    }
+    
+    return expressaoSimples;
+  }
 
-// TODO:
-  private void parse_fator() {
+  private nodeFator parse_fator() {
+    nodeFator fator = null;
+
     switch(currentTokenId) {
       case Token.IDENTIFIER:
         accept(Token.IDENTIFIER);
-        break;
+        return new nodeVariavel();
+
       case Token.FLOATLITERAL:
       case Token.INTLITERAL:
       case Token.BOOLLITERAL:
         acceptIt();
-        break;
+        return new nodeLiteral();
+
       case Token.LPAREN:
+        nodeExpressao expressao = new nodeExpressao();
+
         acceptIt();
-        parse_expressao();
+        expressao = parse_expressao();
         accept(Token.RPAREN);
-        break;
+        
+        return expressao;
 
       default:
         showError("parse fator");
+        return fator;
     }
   }
 
-  private  void parse_iterativo() {
+  private nodeComandoIterativo parse_iterativo() {
+    nodeComandoIterativo comandoIterativo = new nodeComandoIterativo();
+
     accept(Token.WHILE);
-    parse_expressao();
+    comandoIterativo.expressao = parse_expressao();
     accept(Token.DO);
-    parse_comando();
+    comandoIterativo.comando = parse_comando();
+
+    return comandoIterativo;
   }
 
   private ArrayList<nodeComando> parse_listaDeComandos() {
@@ -272,7 +286,7 @@ private nodeExpressaoSimples parse_expressaoSimples() {
       operadorMultiplicativo.operador = currentTokenId;
       termo.operadoresMultiplicativos.add(operadorMultiplicativo);
       acceptIt();
-      termo.operadoresMultiplicativos.add(parse_fator());
+      termo.fatores.add(parse_fator());
     }
     return termo;
   }
