@@ -1,0 +1,9 @@
+program codigo;
+
+var variable1 : real;
+var variable2 : real;
+begin
+  variable1 := 750.2 + .89;
+end
+
+.

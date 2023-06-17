@@ -308,6 +308,8 @@ public class Parser {
 
   private nodeTipo parse_tipo() {
     nodeTipo tipo = new nodeTipo();
+
+    tipo.tipoSimples = new nodeTipoSimples();
     accept(Token.TIPOSIMPLES);
 
     return tipo;

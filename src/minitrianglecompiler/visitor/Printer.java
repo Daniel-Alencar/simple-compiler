@@ -11,7 +11,7 @@ public class Printer implements Visitor {
   }
 
   public void print(nodePrograma programa) {
-    System.out.println("---> Iniciando impressao da arvore");
+    System.out.println("---> Iniciando impressão da árvore");
     programa.visit(this);
   }
 
@@ -24,28 +24,56 @@ public class Printer implements Visitor {
   
   public void visit_nodeCorpo(nodeCorpo corpo) {
     if(corpo != null) {
-      i += tabulacao;
-      this.indent();
       if(corpo.declaracoes != null) {
-        System.out.println("Declarações");
+        corpo.declaracoes.visit(this);
       }
-      this.indent();
       if(corpo.comandoComposto != null) {
+        i += tabulacao;
+        this.indent();
         System.out.println("Comando composto");
+        i -= tabulacao;
       }
     }
   }
   
-  public void visit_nodeDeclaracao(nodeDeclaracao declaracao) {}
-  public void visit_nodeDeclaracaoDeVariavel(nodeDeclaracaoDeVariavel declaracao) {}
-  public void visit_nodeDeclaracoes(nodeDeclaracoes declaracoes) {}
+  public void visit_nodeDeclaracao(nodeDeclaracao declaracao) {
+    if(declaracao != null) {
+      if(declaracao.declaracaoDeVariavel != null) {
+        declaracao.declaracaoDeVariavel.visit(this);
+      }
+    }
+  }
+  public void visit_nodeDeclaracaoDeVariavel(nodeDeclaracaoDeVariavel declaracao) {
+    if(declaracao != null) {
+      if(declaracao.IDs != null) {
+        for(int i = 0; i < declaracao.IDs.size(); i++) {
+          declaracao.IDs.get(i).visit(this);
+        }
+      }
+      if(declaracao.tipo != null) {
+        declaracao.tipo.visit(this);
+      }
+    }
+  }
+  public void visit_nodeDeclaracoes(nodeDeclaracoes declaracoes) {
+    if(declaracoes != null) {
+      if(declaracoes.declaracoes != null) {
+        for(int i = 0; i < declaracoes.declaracoes.size(); i++) {
+          declaracoes.declaracoes.get(i).visit(this);
+        }
+      }
+    }
+  }
   public void visit_nodeExpressao(nodeExpressao expressao) {}
   public void visit_nodeExpressaoSimples(nodeExpressaoSimples expressaoSimples) {}
   public void visit_nodeFator(nodeFator fator) {}
   
   public void visit_nodeID(nodeID ID) {
     if(ID != null) {
-      System.out.println("ID");
+      i += tabulacao;
+      this.indent();
+      System.out.println("Identifier");
+      i -= tabulacao;
     }
   }
 
@@ -67,8 +95,19 @@ public class Printer implements Visitor {
   }
   
   public void visit_nodeTermo(nodeTermo termo) {}
-  public void visit_nodeTipo(nodeTipo tipo) {}
-  public void visit_nodeTipoSimples(nodeTipoSimples tipoSimples) {}
+  public void visit_nodeTipo(nodeTipo tipo) {
+    if(tipo != null) {
+      if(tipo.tipoSimples != null) {
+        tipo.tipoSimples.visit(this);
+      }
+    }
+  }
+  public void visit_nodeTipoSimples(nodeTipoSimples tipoSimples) {
+    i += tabulacao;
+    this.indent();
+    System.out.println("Tipo simples");
+    i -= tabulacao;
+  }
   public void visit_nodeVariavel(nodeVariavel variavel) {}
 
 }

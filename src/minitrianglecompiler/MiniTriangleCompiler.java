@@ -16,7 +16,7 @@ public class MiniTriangleCompiler {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-		Scanner scanner = new Scanner("/test/test0.txt");
+		Scanner scanner = new Scanner("/test/test2.txt");
 		int counter = 0;
 		ArrayList<Token> arrayOfTokens = new ArrayList<>();
 
@@ -44,6 +44,7 @@ public class MiniTriangleCompiler {
 		Parser sintaticParser = new Parser(arrayOfTokens);
 		nodePrograma programaAST = sintaticParser.parse();
 
+		System.out.println("");
 		Printer printer = new Printer();
 		printer.print(programaAST);
 	}
