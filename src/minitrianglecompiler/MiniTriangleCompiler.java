@@ -43,5 +43,8 @@ public class MiniTriangleCompiler {
 
 		Parser sintaticParser = new Parser(arrayOfTokens);
 		nodePrograma programaAST = sintaticParser.parse();
+
+		Printer printer = new Printer();
+		printer.print(programaAST);
 	}
 }
