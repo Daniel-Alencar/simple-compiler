@@ -6,4 +6,8 @@ public class nodeTermo {
 
   public ArrayList<nodeOperadorMultiplicativo> operadoresMultiplicativos;
   public ArrayList<nodeFator> fatores;
+
+  public void visit(Visitor visitor) {
+    visitor.visit_nodeTermo(this);
+  }
 }

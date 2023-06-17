@@ -6,4 +6,8 @@ public class nodeExpressaoSimples {
 
   public ArrayList<nodeOperadorAditivo> operadoresAditivos;
   public ArrayList<nodeTermo> termos;
+
+  public void visit(Visitor visitor) {
+    visitor.visit_nodeExpressaoSimples(this);
+  }
 }
