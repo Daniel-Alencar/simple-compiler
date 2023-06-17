@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import minitrianglecompiler.analise_lexica.Scanner;
 import minitrianglecompiler.analise_sintatica.Parser;
 
+import minitrianglecompiler.visitor.*;
+
 /**
  *
  * @author
@@ -14,7 +16,7 @@ public class MiniTriangleCompiler {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-		Scanner scanner = new Scanner("/test/test1.txt");
+		Scanner scanner = new Scanner("/test/test0.txt");
 		int counter = 0;
 		ArrayList<Token> arrayOfTokens = new ArrayList<>();
 
@@ -40,7 +42,6 @@ public class MiniTriangleCompiler {
 		System.out.println("Length of array: " + arrayOfTokens.size() + "\n");
 
 		Parser sintaticParser = new Parser(arrayOfTokens);
-		sintaticParser.parse();
-
+		nodePrograma programaAST = sintaticParser.parse();
 	}
 }

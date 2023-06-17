@@ -1,8 +1,6 @@
 package minitrianglecompiler.visitor;
 
-import minitrianglecompiler.ast.Comando;
-
-public class nodeComandoIterativo extends Comando {
+public class nodeComandoIterativo extends nodeComando {
   public nodeExpressao expressao;
   public nodeComando comando;
 }
