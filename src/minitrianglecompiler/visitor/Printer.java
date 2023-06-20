@@ -39,7 +39,10 @@ public class Printer implements Visitor {
   public void visit_nodeDeclaracao(nodeDeclaracao declaracao) {
     if(declaracao != null) {
       if(declaracao.declaracaoDeVariavel != null) {
+        i += tabulacao;
+        this.indent();
         declaracao.declaracaoDeVariavel.visit(this);
+        i -= tabulacao;
       }
     }
   }
@@ -72,7 +75,7 @@ public class Printer implements Visitor {
     if(ID != null) {
       i += tabulacao;
       this.indent();
-      System.out.println("Identifier");
+      System.out.println(ID.valor);
       i -= tabulacao;
     }
   }
@@ -105,7 +108,7 @@ public class Printer implements Visitor {
   public void visit_nodeTipoSimples(nodeTipoSimples tipoSimples) {
     i += tabulacao;
     this.indent();
-    System.out.println("Tipo simples");
+    System.out.println(tipoSimples.tipo);
     i -= tabulacao;
   }
   public void visit_nodeVariavel(nodeVariavel variavel) {}

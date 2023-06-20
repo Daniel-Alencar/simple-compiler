@@ -310,6 +310,7 @@ public class Parser {
     nodeTipo tipo = new nodeTipo();
 
     tipo.tipoSimples = new nodeTipoSimples();
+    tipo.tipoSimples.tipo = arrayOfTokens.get(currentIndex).spelling;
     accept(Token.TIPOSIMPLES);
 
     return tipo;
@@ -319,6 +320,7 @@ public class Parser {
     nodeVariavel variavel = new nodeVariavel();
     
     variavel.ID = new nodeID();
+    variavel.ID.valor = arrayOfTokens.get(currentIndex).spelling;
     accept(Token.IDENTIFIER);
 
     return variavel;
