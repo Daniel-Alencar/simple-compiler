@@ -154,8 +154,9 @@ public class Parser {
     expressao.expressaoSimples2 = null;
 
     if (currentTokenId == Token.RELATIONALOPERATOR) {
-      nodeOperadorRelacional operadorRelacional = new nodeOperadorRelacional();
-      operadorRelacional.operador = currentTokenId;
+      nodeOperadorRelacional operadorRelacional = new nodeOperadorRelacional(
+        arrayOfTokens.get(currentIndex).spelling
+      );
       expressao.operadorRelacional = operadorRelacional;
 
       acceptIt();
@@ -168,13 +169,15 @@ public class Parser {
 
   private nodeExpressaoSimples parse_expressaoSimples() {
     nodeExpressaoSimples expressaoSimples = new nodeExpressaoSimples();
+
     expressaoSimples.termo = parse_termo();
     expressaoSimples.operadoresAditivos = new ArrayList<nodeOperadorAditivo>();
     expressaoSimples.termos = new ArrayList<nodeTermo>();
     
     while (currentTokenId == Token.ADITIONALOPERATOR) {
-      nodeOperadorAditivo operadorAditivo = new nodeOperadorAditivo();
-      operadorAditivo.operador = currentTokenId;
+      nodeOperadorAditivo operadorAditivo = new nodeOperadorAditivo(
+        arrayOfTokens.get(currentIndex).spelling
+      );
       expressaoSimples.operadoresAditivos.add(operadorAditivo);
 
       acceptIt();
@@ -190,9 +193,7 @@ public class Parser {
 
     switch(currentTokenId) {
       case Token.IDENTIFIER:
-        nodeVariavel aux1 = new nodeVariavel();
-        aux1.ID = new nodeID();
-        fator = aux1;
+        fator = parse_variavel();
 
         acceptIt();
         break;
@@ -200,21 +201,19 @@ public class Parser {
       case Token.FLOATLITERAL:
       case Token.INTLITERAL:
       case Token.BOOLLITERAL:
-        nodeLiteral aux2 = new nodeLiteral();
-        fator = aux2;
+        fator = new nodeLiteral(
+          arrayOfTokens.get(currentIndex).spelling
+        );
 
         acceptIt();
         break;
 
       case Token.LPAREN:
         acceptIt();
-
-        nodeExpressao expressao = new nodeExpressao();
-        expressao = parse_expressao();
+        fator = parse_expressao();
         
         accept(Token.RPAREN);
         
-        fator = expressao;
         break;
 
       default:
@@ -248,13 +247,13 @@ public class Parser {
   private ArrayList<nodeID> parse_listaDeIds() {
     ArrayList<nodeID> IDs = new ArrayList<>();
 
-    IDs.add(new nodeID());
+    IDs.add(new nodeID(arrayOfTokens.get(currentIndex).spelling));
     accept(Token.IDENTIFIER);
 
     while(currentTokenId == Token.COMMA) {
       acceptIt();
 
-      IDs.add(new nodeID());
+      IDs.add(new nodeID(arrayOfTokens.get(currentIndex).spelling));
       accept(Token.IDENTIFIER);
     }
 
@@ -278,7 +277,7 @@ public class Parser {
     nodePrograma programaAST = new nodePrograma();
 
     accept(Token.PROGRAM);
-    programaAST.id = new nodeID();
+    programaAST.id = new nodeID(arrayOfTokens.get(currentIndex).spelling);
     accept(Token.IDENTIFIER);
 
     accept(Token.SEMICOLON);
@@ -290,13 +289,15 @@ public class Parser {
 
   private nodeTermo parse_termo() {
     nodeTermo termo = new nodeTermo();
-    termo.fatores = new ArrayList<nodeFator>();
-    termo.operadoresMultiplicativos = new ArrayList<nodeOperadorMultiplicativo>();
 
     termo.fator = parse_fator();
+    termo.operadoresMultiplicativos = new ArrayList<nodeOperadorMultiplicativo>();
+    termo.fatores = new ArrayList<nodeFator>();
+
     while(currentTokenId == Token.MULTIPLICATIONALOPERATOR) {
-      nodeOperadorMultiplicativo operadorMultiplicativo = new nodeOperadorMultiplicativo();
-      operadorMultiplicativo.operador = currentTokenId;
+      nodeOperadorMultiplicativo operadorMultiplicativo = new nodeOperadorMultiplicativo(
+        arrayOfTokens.get(currentIndex).spelling
+      );
       termo.operadoresMultiplicativos.add(operadorMultiplicativo);
 
       acceptIt();
@@ -319,8 +320,7 @@ public class Parser {
   private nodeVariavel parse_variavel() {
     nodeVariavel variavel = new nodeVariavel();
     
-    variavel.ID = new nodeID();
-    variavel.ID.valor = arrayOfTokens.get(currentIndex).spelling;
+    variavel.ID = new nodeID(arrayOfTokens.get(currentIndex).spelling);
     accept(Token.IDENTIFIER);
 
     return variavel;

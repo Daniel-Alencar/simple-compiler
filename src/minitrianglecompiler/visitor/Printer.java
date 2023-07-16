@@ -30,7 +30,7 @@ public class Printer implements Visitor {
       if(corpo.comandoComposto != null) {
         i += tabulacao;
         this.indent();
-        System.out.println("Comando composto");
+        corpo.comandoComposto.visit(this);
         i -= tabulacao;
       }
     }
