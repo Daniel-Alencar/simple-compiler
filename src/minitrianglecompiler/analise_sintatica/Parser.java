@@ -1,4 +1,5 @@
 package minitrianglecompiler.analise_sintatica;
+
 import java.util.ArrayList;
 
 import minitrianglecompiler.Token;
@@ -19,10 +20,10 @@ public class Parser {
 
   private void accept(int tokenId) {
     System.out.println("Current Token on Array: " + arrayOfTokens.get(currentIndex).spelling);
-    
-    if(tokenId == currentTokenId) {
+
+    if (tokenId == currentTokenId) {
       currentIndex++;
-      if(this.arrayOfTokens.size() > currentIndex) {
+      if (this.arrayOfTokens.size() > currentIndex) {
         currentTokenId = this.arrayOfTokens.get(currentIndex).kind;
       }
     } else {
@@ -33,7 +34,7 @@ public class Parser {
   private void acceptIt() {
     System.out.println("Current Token on Array: " + arrayOfTokens.get(currentIndex).spelling);
     currentIndex++;
-    if(this.arrayOfTokens.size() > currentIndex) {
+    if (this.arrayOfTokens.size() > currentIndex) {
       currentTokenId = this.arrayOfTokens.get(currentIndex).kind;
     }
   }
@@ -60,7 +61,7 @@ public class Parser {
   private nodeComando parse_comando() {
     nodeComando comando;
 
-    switch(currentTokenId) {
+    switch (currentTokenId) {
       case Token.IDENTIFIER:
         comando = parse_atribuicao();
         break;
@@ -100,7 +101,7 @@ public class Parser {
 
     condicional.comando2 = null;
 
-    if(currentTokenId == Token.ELSE) {
+    if (currentTokenId == Token.ELSE) {
       acceptIt();
       condicional.comando2 = parse_comando();
     }
@@ -137,8 +138,8 @@ public class Parser {
   private nodeDeclaracoes parse_declaracoes() {
     nodeDeclaracoes declaracoes = new nodeDeclaracoes();
     declaracoes.declaracoes = new ArrayList<>();
-    
-    while(currentTokenId == Token.VAR) {
+
+    while (currentTokenId == Token.VAR) {
       declaracoes.declaracoes.add(parse_declaracao());
       accept(Token.SEMICOLON);
     }
@@ -154,7 +155,8 @@ public class Parser {
     expressao.expressaoSimples2 = null;
 
     if (currentTokenId == Token.RELATIONALOPERATOR) {
-      nodeOperadorRelacional operadorRelacional = new nodeOperadorRelacional();
+      nodeOperadorRelacional operadorRelacional = new nodeOperadorRelacional(
+          arrayOfTokens.get(currentTokenId).spelling);
       operadorRelacional.operador = currentTokenId;
       expressao.operadorRelacional = operadorRelacional;
 
@@ -162,8 +164,8 @@ public class Parser {
 
       expressao.expressaoSimples2 = parse_expressaoSimples();
     }
-    
-    return expressao; 
+
+    return expressao;
   }
 
   private nodeExpressaoSimples parse_expressaoSimples() {
@@ -171,24 +173,24 @@ public class Parser {
     expressaoSimples.termo = parse_termo();
     expressaoSimples.operadoresAditivos = new ArrayList<nodeOperadorAditivo>();
     expressaoSimples.termos = new ArrayList<nodeTermo>();
-    
+
     while (currentTokenId == Token.ADITIONALOPERATOR) {
-      nodeOperadorAditivo operadorAditivo = new nodeOperadorAditivo();
+      nodeOperadorAditivo operadorAditivo = new nodeOperadorAditivo(arrayOfTokens.get(currentIndex).spelling);
       operadorAditivo.operador = currentTokenId;
       expressaoSimples.operadoresAditivos.add(operadorAditivo);
 
       acceptIt();
-      
+
       expressaoSimples.termos.add(parse_termo());
     }
-    
+
     return expressaoSimples;
   }
 
   private nodeFator parse_fator() {
     nodeFator fator = null;
 
-    switch(currentTokenId) {
+    switch (currentTokenId) {
       case Token.IDENTIFIER:
         nodeVariavel aux1 = new nodeVariavel();
         aux1.ID = new nodeID();
@@ -200,7 +202,7 @@ public class Parser {
       case Token.FLOATLITERAL:
       case Token.INTLITERAL:
       case Token.BOOLLITERAL:
-        nodeLiteral aux2 = new nodeLiteral();
+        nodeLiteral aux2 = new nodeLiteral(arrayOfTokens.get(currentIndex).spelling);
         fator = aux2;
 
         acceptIt();
@@ -211,9 +213,9 @@ public class Parser {
 
         nodeExpressao expressao = new nodeExpressao();
         expressao = parse_expressao();
-        
+
         accept(Token.RPAREN);
-        
+
         fator = expressao;
         break;
 
@@ -237,24 +239,28 @@ public class Parser {
   private ArrayList<nodeComando> parse_listaDeComandos() {
     ArrayList<nodeComando> comandos = new ArrayList<>();
 
-    while(currentTokenId == Token.IDENTIFIER) {
+    while (currentTokenId == Token.IDENTIFIER) {
       comandos.add(parse_comando());
       accept(Token.SEMICOLON);
     }
-    
+
     return comandos;
   }
 
   private ArrayList<nodeID> parse_listaDeIds() {
     ArrayList<nodeID> IDs = new ArrayList<>();
 
-    IDs.add(new nodeID());
+    nodeID ID_aux1 = new nodeID();
+    ID_aux1.valor = arrayOfTokens.get(currentIndex).spelling;
+    IDs.add(ID_aux1);
     accept(Token.IDENTIFIER);
 
-    while(currentTokenId == Token.COMMA) {
+    while (currentTokenId == Token.COMMA) {
+      nodeID ID_aux2 = new nodeID();
+      ID_aux2.valor = arrayOfTokens.get(currentIndex).spelling;
       acceptIt();
 
-      IDs.add(new nodeID());
+      IDs.add(ID_aux2);
       accept(Token.IDENTIFIER);
     }
 
@@ -262,7 +268,7 @@ public class Parser {
   }
 
   private void parse_outros() {
-    switch(currentTokenId) {
+    switch (currentTokenId) {
       case Token.EXCLAMATION:
       case Token.ARROBA:
       case Token.HASHTAG:
@@ -279,6 +285,7 @@ public class Parser {
 
     accept(Token.PROGRAM);
     programaAST.id = new nodeID();
+    programaAST.id.valor = arrayOfTokens.get(currentIndex).spelling;
     accept(Token.IDENTIFIER);
 
     accept(Token.SEMICOLON);
@@ -294,8 +301,9 @@ public class Parser {
     termo.operadoresMultiplicativos = new ArrayList<nodeOperadorMultiplicativo>();
 
     termo.fator = parse_fator();
-    while(currentTokenId == Token.MULTIPLICATIONALOPERATOR) {
-      nodeOperadorMultiplicativo operadorMultiplicativo = new nodeOperadorMultiplicativo();
+    while (currentTokenId == Token.MULTIPLICATIONALOPERATOR) {
+      nodeOperadorMultiplicativo operadorMultiplicativo = new nodeOperadorMultiplicativo(
+          arrayOfTokens.get(currentIndex).spelling);
       operadorMultiplicativo.operador = currentTokenId;
       termo.operadoresMultiplicativos.add(operadorMultiplicativo);
 
@@ -318,7 +326,7 @@ public class Parser {
 
   private nodeVariavel parse_variavel() {
     nodeVariavel variavel = new nodeVariavel();
-    
+
     variavel.ID = new nodeID();
     variavel.ID.valor = arrayOfTokens.get(currentIndex).spelling;
     accept(Token.IDENTIFIER);

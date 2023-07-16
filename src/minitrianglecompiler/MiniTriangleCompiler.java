@@ -1,4 +1,5 @@
 package minitrianglecompiler;
+
 import java.util.ArrayList;
 
 import minitrianglecompiler.analise_lexica.Scanner;
@@ -16,7 +17,7 @@ public class MiniTriangleCompiler {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-		Scanner scanner = new Scanner("/test/test2.txt");
+		Scanner scanner = new Scanner("/test/test3.txt");
 		int counter = 0;
 		ArrayList<Token> arrayOfTokens = new ArrayList<>();
 
@@ -24,7 +25,7 @@ public class MiniTriangleCompiler {
 			do {
 				Token currentToken = scanner.scan();
 				arrayOfTokens.add(counter, currentToken);
-				
+
 				System.out.println("TOKEN:");
 				System.out.println("speeling:" + currentToken.spelling);
 				System.out.println("kind:" + currentToken.kind);
@@ -34,8 +35,8 @@ public class MiniTriangleCompiler {
 				System.out.println();
 
 				counter++;
-			} while(scanner.isEOF() == false && counter < 50);
-		} catch(Exception e) {
+			} while (scanner.isEOF() == false && counter < 50);
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 
