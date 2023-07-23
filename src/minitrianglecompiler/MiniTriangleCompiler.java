@@ -17,7 +17,7 @@ public class MiniTriangleCompiler {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-		Scanner scanner = new Scanner("/test/test3.txt");
+		Scanner scanner = new Scanner("/test/test2.txt");
 		int counter = 0;
 		ArrayList<Token> arrayOfTokens = new ArrayList<>();
 
