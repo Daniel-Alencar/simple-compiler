@@ -11,11 +11,11 @@ public class IdentificationTable {
     this.currentLevel = 0;
   }
 
-  public Attribute retrive(String id) {
-    for(int i = 0; i < data.size(); i++) {
-      if(this.data.get(i).name.equals(id)) {
+  public Attribute retrieve(String id) {
+    for (int i = 0; i < data.size(); i++) {
+      if (this.data.get(i).identifier.equals(id)) {
         return data.get(i);
-      } 
+      }
     }
     return null;
   }
@@ -25,7 +25,7 @@ public class IdentificationTable {
   }
 
   public void enter(String id, Attribute attribute) {
-    attribute.name = id;
+    attribute.identifier = id;
     this.data.add(attribute);
   }
 

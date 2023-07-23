@@ -1,11 +1,14 @@
 package minitrianglecompiler.analise_de_contexto;
 
 public class Attribute {
-  public String name;
+  public String identifier;
   public int scopeLevel;
+  public byte type;
 
-  public Attribute(String name, int scopeLevel) {
-    this.name = name;
+  public static final byte BOOL = 0, INT = 1, REAL = 2;
+
+  public Attribute(String identifier, int scopeLevel) {
+    this.identifier = identifier;
     this.scopeLevel = scopeLevel;
   }
 }
