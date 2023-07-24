@@ -1,0 +1,6 @@
+Essa linguagem possui escopo aninhado.
+O seguintes blocos têm escopo:
+- Comando condicional
+- Comando iterativo
+- Comando composto
+- Corpo (talvez, acredito que não precisa)

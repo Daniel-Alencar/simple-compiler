@@ -2,6 +2,7 @@ package minitrianglecompiler;
 
 import java.util.ArrayList;
 
+import minitrianglecompiler.analise_de_contexto.IdentificationTable;
 import minitrianglecompiler.analise_lexica.Scanner;
 import minitrianglecompiler.analise_sintatica.Parser;
 
@@ -48,5 +49,7 @@ public class MiniTriangleCompiler {
 		System.out.println("");
 		Printer printer = new Printer();
 		printer.print(programaAST);
+
+		// Análise de contexto
 	}
 }

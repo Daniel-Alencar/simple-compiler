@@ -4,6 +4,8 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import minitrianglecompiler.Token;
+import minitrianglecompiler.analise_de_contexto.Attribute;
+import minitrianglecompiler.analise_de_contexto.IdentificationTable;
 
 /**
  *
@@ -21,7 +23,11 @@ public class Scanner {
 	private int currentLine;
 	private int currentColumn;
 
+	public IdentificationTable table;
+
 	public Scanner(String pathToFile) {
+		table = new IdentificationTable();
+
 		counterToMarkCharacter = 0;
 		try {
 			String currentDirectory = System.getProperty("user.dir");
@@ -374,6 +380,28 @@ public class Scanner {
 		currentSpelling = new StringBuffer("");
 		currentKind = scanToken();
 
-		return new Token(currentKind, currentSpelling.toString(), currentLine, currentColumn);
+		switch(currentKind) {
+			case Token.IDENTIFIER:
+				table.enter(currentSpelling.toString());
+				break;
+
+			case Token.BEGIN:
+			case Token.IF:
+			case Token.WHILE:
+				table.openScope();
+				break;
+			case Token.END:
+				table.closeScope();
+
+			default:
+				break;
+		}
+
+		return new Token(
+			currentKind, 
+			currentSpelling.toString(),
+			currentLine, 
+			currentColumn
+		);
 	}
 }

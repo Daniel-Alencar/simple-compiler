@@ -20,7 +20,7 @@ public class IdentificationTable {
     return null;
   }
 
-  public void add(String id) {
+  public void enter(String id) {
     this.data.add(new Attribute(id, currentLevel));
   }
 

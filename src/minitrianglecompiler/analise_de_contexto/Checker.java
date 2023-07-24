@@ -1,29 +1,6 @@
 package minitrianglecompiler.analise_de_contexto;
 
-import minitrianglecompiler.visitor.Visitor;
-import minitrianglecompiler.visitor.nodeComando;
-import minitrianglecompiler.visitor.nodeComandoAtribuicao;
-import minitrianglecompiler.visitor.nodeComandoComposto;
-import minitrianglecompiler.visitor.nodeComandoCondicional;
-import minitrianglecompiler.visitor.nodeComandoIterativo;
-import minitrianglecompiler.visitor.nodeCorpo;
-import minitrianglecompiler.visitor.nodeDeclaracao;
-import minitrianglecompiler.visitor.nodeDeclaracaoDeVariavel;
-import minitrianglecompiler.visitor.nodeDeclaracoes;
-import minitrianglecompiler.visitor.nodeExpressao;
-import minitrianglecompiler.visitor.nodeExpressaoSimples;
-import minitrianglecompiler.visitor.nodeFator;
-import minitrianglecompiler.visitor.nodeID;
-import minitrianglecompiler.visitor.nodeLiteral;
-import minitrianglecompiler.visitor.nodeOperador;
-import minitrianglecompiler.visitor.nodeOperadorAditivo;
-import minitrianglecompiler.visitor.nodeOperadorMultiplicativo;
-import minitrianglecompiler.visitor.nodeOperadorRelacional;
-import minitrianglecompiler.visitor.nodePrograma;
-import minitrianglecompiler.visitor.nodeTermo;
-import minitrianglecompiler.visitor.nodeTipo;
-import minitrianglecompiler.visitor.nodeTipoSimples;
-import minitrianglecompiler.visitor.nodeVariavel;
+import minitrianglecompiler.visitor.*;
 
 public class Checker implements Visitor {
 
@@ -38,7 +15,7 @@ public class Checker implements Visitor {
     @Override
     public void visit_nodeComandoAtribuicao(nodeComandoAtribuicao comando) {
         if (comando != null)
-            identificationTable.enter(comando.variavel, null);
+            identificationTable.enter(comando.variavel.ID.valor);
         comando.visit(this);
     }
 
@@ -97,7 +74,7 @@ public class Checker implements Visitor {
         identificationTable.openScope();
         for (int i = 0; i < declaracao.IDs.size(); i++) {
             if (identificationTable.retrieve(declaracao.IDs.get(i).valor) == null) {
-                identificationTable.enter(declaracao.IDs.get(i).valor, null);
+                identificationTable.enter(declaracao.IDs.get(i).valor);
             } else {
                 // erro variavel já declarada
             }
