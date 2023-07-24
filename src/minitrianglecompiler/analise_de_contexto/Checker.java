@@ -4,7 +4,12 @@ import minitrianglecompiler.visitor.*;
 
 public class Checker implements Visitor {
 
-    private IdentificationTable identificationTable = new IdentificationTable();
+    public IdentificationTable identificationTable = new IdentificationTable();
+
+    public void check(nodePrograma programa) {
+        System.out.println("---> Iniciando a análise da árvore");
+        programa.visit(this);
+    }
 
     @Override
     public void visit_nodeComando(nodeComando comando) {
@@ -16,13 +21,18 @@ public class Checker implements Visitor {
     public void visit_nodeComandoAtribuicao(nodeComandoAtribuicao comando) {
         if (comando != null)
             identificationTable.enter(comando.variavel.ID.valor);
-        comando.visit(this);
+        comando.variavel.visit(this);
+        comando.expressao.visit(this);
     }
 
     @Override
     public void visit_nodeComandoComposto(nodeComandoComposto comando) {
         if (comando != null) {
-            comando.visit(this);
+            if(comando.comandos != null) {
+                for(int i= 0; i < comando.comandos.size(); i++) {
+                    comando.comandos.get(i).visit(this);
+                }
+            }  
         }
     }
 
@@ -47,8 +57,8 @@ public class Checker implements Visitor {
         if (comando != null) {
             // verificar se a expressão é booleana
             if (comando.expressao != null) {
-                if (comando.comando != null) {
-                    comando.comando.visit(this);
+                if (comando.expressao != null) {
+                    comando.expressao.visit(this);
                 }
             }
         }
@@ -57,7 +67,8 @@ public class Checker implements Visitor {
     @Override
     public void visit_nodeCorpo(nodeCorpo corpo) {
         if (corpo != null) {
-            corpo.visit(this);
+            corpo.comandoComposto.visit(this);
+            corpo.declaracoes.visit(this);
         }
     }
 
@@ -71,16 +82,14 @@ public class Checker implements Visitor {
     @Override
     public void visit_nodeDeclaracaoDeVariavel(nodeDeclaracaoDeVariavel declaracao) {
         // checar se o tipo da declaração é valido
-        identificationTable.openScope();
         for (int i = 0; i < declaracao.IDs.size(); i++) {
             if (identificationTable.retrieve(declaracao.IDs.get(i).valor) == null) {
                 identificationTable.enter(declaracao.IDs.get(i).valor);
+                declaracao.IDs.get(i).visit(this);
             } else {
                 // erro variavel já declarada
             }
         }
-        declaracao.visit(this);
-        identificationTable.closeScope();
     }
 
     @Override
@@ -137,57 +146,57 @@ public class Checker implements Visitor {
 
     @Override
     public void visit_nodeID(nodeID ID) {
-        if (ID != null) {
-            ID.visit(this);
+        if (ID != null && identificationTable.retrieve(ID.valor) != null) {
+            return;
         }
     }
 
     @Override
     public void visit_nodeLiteral(nodeLiteral literal) {
         if (literal != null) {
-            literal.visit(this);
+            return;
         }
     }
 
     @Override
     public void visit_nodeOperador(nodeOperador operador) {
         if (operador != null) {
-            operador.visit(this);
+            return;
         }
     }
 
     @Override
     public void visit_nodeOperadorAditivo(nodeOperadorAditivo operador) {
         if (operador != null) {
-            operador.visit(this);
+            return;
         }
     }
 
     @Override
     public void visit_nodeOperadorMultiplicativo(nodeOperadorMultiplicativo operador) {
         if (operador != null) {
-            operador.visit(this);
+            return;
         }
     }
 
     @Override
     public void visit_nodeOperadorRelacional(nodeOperadorRelacional operador) {
         if (operador != null) {
-            operador.visit(this);
+            return;
         }
     }
 
     @Override
     public void visit_nodePrograma(nodePrograma programa) {
         if (programa != null) {
-            programa.visit(this);
+            programa.corpo.visit(this);
         }
     }
 
     @Override
     public void visit_nodeTermo(nodeTermo termo) {
         if (termo != null) {
-            termo.visit(this);
+            termo.fator.visit(this);
         }
     }
 
@@ -207,9 +216,10 @@ public class Checker implements Visitor {
 
     @Override
     public void visit_nodeVariavel(nodeVariavel variavel) {
-        if (variavel != null && identificationTable.retrieve(variavel.ID.valor) != null) {
-            variavel.visit(this);
+        if (variavel != null) {
+            variavel.ID.visit(this);
         }
+        // Erro de variável não declarada
     }
 
 }

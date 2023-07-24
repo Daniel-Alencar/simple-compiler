@@ -2,6 +2,7 @@ package minitrianglecompiler;
 
 import java.util.ArrayList;
 
+import minitrianglecompiler.analise_de_contexto.Checker;
 import minitrianglecompiler.analise_de_contexto.IdentificationTable;
 import minitrianglecompiler.analise_lexica.Scanner;
 import minitrianglecompiler.analise_sintatica.Parser;
@@ -50,6 +51,8 @@ public class MiniTriangleCompiler {
 		Printer printer = new Printer();
 		printer.print(programaAST);
 
-		// Análise de contexto
+		Checker checker = new Checker();
+		checker.check(programaAST);
+		checker.identificationTable.printTable();
 	}
 }

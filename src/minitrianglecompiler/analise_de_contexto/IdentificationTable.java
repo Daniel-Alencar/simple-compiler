@@ -4,11 +4,9 @@ import java.util.ArrayList;
 
 public class IdentificationTable {
   ArrayList<Attribute> data;
-  int currentLevel;
 
   public IdentificationTable() {
     this.data = new ArrayList<Attribute>();
-    this.currentLevel = 0;
   }
 
   public Attribute retrieve(String id) {
@@ -21,7 +19,7 @@ public class IdentificationTable {
   }
 
   public void enter(String id) {
-    this.data.add(new Attribute(id, currentLevel));
+    this.data.add(new Attribute(id));
   }
 
   public void enter(String id, Attribute attribute) {
@@ -29,11 +27,11 @@ public class IdentificationTable {
     this.data.add(attribute);
   }
 
-  public void openScope() {
-    this.currentLevel++;
-  }
 
-  public void closeScope() {
-    this.currentLevel--;
+  public void printTable() {
+    System.out.println("Tabela de Identificação de símbolos:");
+    for(int i = 0; i < data.size(); i++) {
+      System.out.println("-" + data.get(i).identifier);
+    }
   }
 }
