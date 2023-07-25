@@ -2,6 +2,8 @@ package minitrianglecompiler.analise_de_contexto;
 
 import java.util.ArrayList;
 
+import minitrianglecompiler.visitor.nodeDeclaracaoDeVariavel;
+
 public class IdentificationTable {
   ArrayList<Attribute> data;
 
@@ -18,8 +20,8 @@ public class IdentificationTable {
     return null;
   }
 
-  public void enter(String id) {
-    this.data.add(new Attribute(id));
+  public void enter(String id, nodeDeclaracaoDeVariavel declaracaoDeVariavel) {
+    this.data.add(new Attribute(id, declaracaoDeVariavel));
   }
 
   public void enter(String id, Attribute attribute) {

@@ -1,7 +1,8 @@
 program codigo;
 
-var variable1 : real;
-var variable2 : real;
+var variable1 , variable2  : real;
+!var variable2 : real;
+!var variable2 : integer;
 begin
   variable1 := 750.2 + .89;
 end

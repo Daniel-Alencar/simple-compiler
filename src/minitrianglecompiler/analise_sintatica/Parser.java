@@ -256,11 +256,12 @@ public class Parser {
     accept(Token.IDENTIFIER);
 
     while (currentTokenId == Token.COMMA) {
-      nodeID ID_aux2 = new nodeID();
-      ID_aux2.valor = arrayOfTokens.get(currentIndex).spelling;
       acceptIt();
 
+      nodeID ID_aux2 = new nodeID();
+      ID_aux2.valor = arrayOfTokens.get(currentIndex).spelling;
       IDs.add(ID_aux2);
+
       accept(Token.IDENTIFIER);
     }
 

@@ -19,10 +19,16 @@ public class Checker implements Visitor {
 
     @Override
     public void visit_nodeComandoAtribuicao(nodeComandoAtribuicao comando) {
-        if (comando != null)
-            identificationTable.enter(comando.variavel.ID.valor);
-        comando.variavel.visit(this);
-        comando.expressao.visit(this);
+        if (comando != null) {
+            Attribute atributo = identificationTable.retrieve(comando.variavel.ID.valor);
+            if(atributo != null) {
+                comando.declaracaoDeVariavel = atributo.declaracaoDeVariavel;
+            } else {
+                // Variável não declarada
+                System.out.println("A variável " + comando.variavel.ID.valor + " não foi declarada!");
+            }
+            comando.expressao.visit(this);
+        }
     }
 
     @Override
@@ -67,8 +73,8 @@ public class Checker implements Visitor {
     @Override
     public void visit_nodeCorpo(nodeCorpo corpo) {
         if (corpo != null) {
-            corpo.comandoComposto.visit(this);
             corpo.declaracoes.visit(this);
+            corpo.comandoComposto.visit(this);
         }
     }
 
@@ -81,13 +87,16 @@ public class Checker implements Visitor {
 
     @Override
     public void visit_nodeDeclaracaoDeVariavel(nodeDeclaracaoDeVariavel declaracao) {
-        // checar se o tipo da declaração é valido
+        // Não precisa verificar se o Tipo é válido, o analisador léxico já cuida disso
+        // Talvez visitar o nodeTipo
         for (int i = 0; i < declaracao.IDs.size(); i++) {
             if (identificationTable.retrieve(declaracao.IDs.get(i).valor) == null) {
-                identificationTable.enter(declaracao.IDs.get(i).valor);
+                
+                identificationTable.enter(declaracao.IDs.get(i).valor, declaracao);
                 declaracao.IDs.get(i).visit(this);
             } else {
-                // erro variavel já declarada
+                // Erro variavel já declarada
+                System.out.println("Variável " + declaracao.IDs.get(i).valor + " já declarada!");
             }
         }
     }
@@ -107,11 +116,11 @@ public class Checker implements Visitor {
             if (expressao.expressaoSimples1 != null) {
                 expressao.expressaoSimples1.visit(this);
             }
-            if (expressao.expressaoSimples2 != null) {
-                expressao.expressaoSimples1.visit(this);
-            }
             if (expressao.operadorRelacional != null) {
                 expressao.operadorRelacional.visit(this);
+            }
+            if (expressao.expressaoSimples2 != null) {
+                expressao.expressaoSimples1.visit(this);
             }
         }
     }
