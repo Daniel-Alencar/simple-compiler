@@ -3,6 +3,7 @@ package minitrianglecompiler.analise_sintatica;
 import java.util.ArrayList;
 
 import minitrianglecompiler.Token;
+import minitrianglecompiler.analise_de_contexto.Type;
 import minitrianglecompiler.visitor.*;
 
 public class Parser {
@@ -189,7 +190,8 @@ public class Parser {
 
   private nodeFator parse_fator() {
     nodeFator fator = null;
-
+    Type tipo;
+    
     switch (currentTokenId) {
       case Token.IDENTIFIER:
         nodeVariavel aux1 = new nodeVariavel();
@@ -200,9 +202,17 @@ public class Parser {
         break;
 
       case Token.FLOATLITERAL:
-      case Token.INTLITERAL:
-      case Token.BOOLLITERAL:
-        nodeLiteral aux2 = new nodeLiteral(arrayOfTokens.get(currentIndex).spelling);
+        tipo = new Type(Type.REAL);
+
+        case Token.INTLITERAL:
+        tipo = new Type(Type.INT);
+        
+        case Token.BOOLLITERAL:
+        tipo = new Type(Type.BOOL);
+        
+        nodeLiteral aux2 = new nodeLiteral(
+          arrayOfTokens.get(currentIndex).spelling, tipo
+        );
         fator = aux2;
 
         acceptIt();

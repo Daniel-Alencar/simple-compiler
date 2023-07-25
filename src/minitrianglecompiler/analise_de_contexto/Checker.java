@@ -1,5 +1,7 @@
 package minitrianglecompiler.analise_de_contexto;
 
+import java.io.EOFException;
+
 import minitrianglecompiler.visitor.*;
 
 public class Checker implements Visitor {
@@ -111,7 +113,7 @@ public class Checker implements Visitor {
     }
 
     @Override
-    public void visit_nodeExpressao(nodeExpressao expressao) {
+    public Type visit_nodeExpressao(nodeExpressao expressao) {
         if (expressao != null) {
             if (expressao.expressaoSimples1 != null) {
                 expressao.expressaoSimples1.visit(this);
@@ -123,6 +125,8 @@ public class Checker implements Visitor {
                 expressao.expressaoSimples1.visit(this);
             }
         }
+
+        return new Type(Type.BOOL);
     }
 
     @Override
@@ -143,7 +147,7 @@ public class Checker implements Visitor {
     }
 
     @Override
-    public void visit_nodeFator(nodeFator fator) {
+    public Type visit_nodeFator(nodeFator fator) {
         if (fator instanceof nodeVariavel) {
             ((nodeVariavel) fator).visit(this);
         } else if (fator instanceof nodeLiteral) {
@@ -151,6 +155,7 @@ public class Checker implements Visitor {
         } else if (fator instanceof nodeExpressao) {
             ((nodeExpressao) fator).visit(this);
         }
+        return new Type(Type.BOOL);
     }
 
     @Override
@@ -161,10 +166,11 @@ public class Checker implements Visitor {
     }
 
     @Override
-    public void visit_nodeLiteral(nodeLiteral literal) {
+    public Type visit_nodeLiteral(nodeLiteral literal) {
         if (literal != null) {
-            return;
+            return literal.tipo;
         }
+        return null;
     }
 
     @Override

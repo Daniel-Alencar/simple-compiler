@@ -1,10 +1,14 @@
 package minitrianglecompiler.visitor;
 
-public class nodeLiteral extends nodeFator {
-  String valor;
+import minitrianglecompiler.analise_de_contexto.Type;
 
-  public nodeLiteral(String valor) {
+public class nodeLiteral extends nodeFator {
+  public String valor;
+  public Type tipo;
+
+  public nodeLiteral(String valor, Type tipo) {
     this.valor = valor;
+    this.tipo = tipo;
   }
 
   public void visit(Visitor visitor) {

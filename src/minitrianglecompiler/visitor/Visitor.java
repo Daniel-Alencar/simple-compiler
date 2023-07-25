@@ -1,5 +1,7 @@
 package minitrianglecompiler.visitor;
 
+import minitrianglecompiler.analise_de_contexto.Type;
+
 public interface Visitor {
   public void visit_nodeComando(nodeComando comando);
   public void visit_nodeComandoAtribuicao(nodeComandoAtribuicao comando);
@@ -10,11 +12,11 @@ public interface Visitor {
   public void visit_nodeDeclaracao(nodeDeclaracao declaracao);
   public void visit_nodeDeclaracaoDeVariavel(nodeDeclaracaoDeVariavel declaracao);
   public void visit_nodeDeclaracoes(nodeDeclaracoes declaracoes);
-  public void visit_nodeExpressao(nodeExpressao expressao);
+  public Type visit_nodeExpressao(nodeExpressao expressao);
   public void visit_nodeExpressaoSimples(nodeExpressaoSimples expressao);
-  public void visit_nodeFator(nodeFator fator);
+  public Type visit_nodeFator(nodeFator fator);
   public void visit_nodeID(nodeID ID);
-  public void visit_nodeLiteral(nodeLiteral literal);
+  public Type visit_nodeLiteral(nodeLiteral literal);
   public void visit_nodeOperador(nodeOperador operador);
   public void visit_nodeOperadorAditivo(nodeOperadorAditivo operador);
   public void visit_nodeOperadorMultiplicativo(nodeOperadorMultiplicativo operador);
