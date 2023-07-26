@@ -1,7 +1,5 @@
 package minitrianglecompiler.analise_de_contexto;
 
-import java.io.EOFException;
-
 import minitrianglecompiler.visitor.*;
 
 public class Checker implements Visitor {
@@ -9,6 +7,7 @@ public class Checker implements Visitor {
     public IdentificationTable identificationTable = new IdentificationTable();
 
     public void check(nodePrograma programa) {
+        System.out.println("");
         System.out.println("---> Iniciando a análise da árvore");
         programa.visit(this);
     }
@@ -26,7 +25,7 @@ public class Checker implements Visitor {
             if(atributo != null) {
                 comando.declaracaoDeVariavel = atributo.declaracaoDeVariavel;
             } else {
-                // Variável não declarada
+                // Erro variável não declarada
                 System.out.println("A variável " + comando.variavel.ID.valor + " não foi declarada!");
             }
             comando.expressao.visit(this);
@@ -57,13 +56,13 @@ public class Checker implements Visitor {
                 }
             }
         }
-        // erro semantico caso contrário
+        // Erro semantico caso contrário
     }
 
     @Override
     public void visit_nodeComandoIterativo(nodeComandoIterativo comando) {
         if (comando != null) {
-            // verificar se a expressão é booleana
+            // Verificar se a expressão é booleana
             if (comando.expressao != null) {
                 if (comando.expressao != null) {
                     comando.expressao.visit(this);
@@ -113,7 +112,8 @@ public class Checker implements Visitor {
     }
 
     @Override
-    public Type visit_nodeExpressao(nodeExpressao expressao) {
+    public void visit_nodeExpressao(nodeExpressao expressao) {
+
         if (expressao != null) {
             if (expressao.expressaoSimples1 != null) {
                 expressao.expressaoSimples1.visit(this);
@@ -125,8 +125,6 @@ public class Checker implements Visitor {
                 expressao.expressaoSimples1.visit(this);
             }
         }
-
-        return new Type(Type.BOOL);
     }
 
     @Override
@@ -147,7 +145,7 @@ public class Checker implements Visitor {
     }
 
     @Override
-    public Type visit_nodeFator(nodeFator fator) {
+    public void visit_nodeFator(nodeFator fator) {
         if (fator instanceof nodeVariavel) {
             ((nodeVariavel) fator).visit(this);
         } else if (fator instanceof nodeLiteral) {
@@ -155,7 +153,6 @@ public class Checker implements Visitor {
         } else if (fator instanceof nodeExpressao) {
             ((nodeExpressao) fator).visit(this);
         }
-        return new Type(Type.BOOL);
     }
 
     @Override
@@ -166,11 +163,9 @@ public class Checker implements Visitor {
     }
 
     @Override
-    public Type visit_nodeLiteral(nodeLiteral literal) {
-        if (literal != null) {
-            return literal.tipo;
-        }
-        return null;
+    public void visit_nodeLiteral(nodeLiteral literal) {
+        if (literal != null) {}
+        return;
     }
 
     @Override
@@ -234,7 +229,25 @@ public class Checker implements Visitor {
         if (variavel != null) {
             variavel.ID.visit(this);
         }
-        // Erro de variável não declarada
+        // Erro variável não declarada
     }
 
+    public Type getType_nodeExpressao(nodeExpressao expressao) {
+        return null;
+    }
+    public Type getType_nodeExpressaoSimples(nodeExpressaoSimples expressao) {
+        return null;
+    }
+    public Type getType_nodeFator(nodeFator fator) {
+        return null;
+    }
+    public Type getType_nodeLiteral(nodeLiteral literal) {
+        return null;
+    }
+    public Type getType_nodeTermo(nodeTermo termo) {
+        return null;
+    }
+    public Type getType_nodeVariavel(nodeVariavel variavel) {
+        return null;
+    }
 }

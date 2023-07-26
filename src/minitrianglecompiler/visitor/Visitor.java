@@ -12,11 +12,11 @@ public interface Visitor {
   public void visit_nodeDeclaracao(nodeDeclaracao declaracao);
   public void visit_nodeDeclaracaoDeVariavel(nodeDeclaracaoDeVariavel declaracao);
   public void visit_nodeDeclaracoes(nodeDeclaracoes declaracoes);
-  public Type visit_nodeExpressao(nodeExpressao expressao);
+  public void visit_nodeExpressao(nodeExpressao expressao);
   public void visit_nodeExpressaoSimples(nodeExpressaoSimples expressao);
-  public Type visit_nodeFator(nodeFator fator);
+  public void visit_nodeFator(nodeFator fator);
   public void visit_nodeID(nodeID ID);
-  public Type visit_nodeLiteral(nodeLiteral literal);
+  public void visit_nodeLiteral(nodeLiteral literal);
   public void visit_nodeOperador(nodeOperador operador);
   public void visit_nodeOperadorAditivo(nodeOperadorAditivo operador);
   public void visit_nodeOperadorMultiplicativo(nodeOperadorMultiplicativo operador);
@@ -26,4 +26,11 @@ public interface Visitor {
   public void visit_nodeTipo(nodeTipo tipo);
   public void visit_nodeTipoSimples(nodeTipoSimples tipoSimples);
   public void visit_nodeVariavel(nodeVariavel variavel);
+
+  public Type getType_nodeExpressao(nodeExpressao expressao);
+  public Type getType_nodeExpressaoSimples(nodeExpressaoSimples expressao);
+  public Type getType_nodeFator(nodeFator fator);
+  public Type getType_nodeLiteral(nodeLiteral literal);
+  public Type getType_nodeTermo(nodeTermo termo);
+  public Type getType_nodeVariavel(nodeVariavel variavel);
 }

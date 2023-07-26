@@ -1,6 +1,6 @@
 package minitrianglecompiler.visitor;
 
-import minitrianglecompiler.Token;
+import minitrianglecompiler.analise_de_contexto.Type;
 
 public class Printer implements Visitor {
 
@@ -291,6 +291,25 @@ public class Printer implements Visitor {
     if (variavel != null) {
       variavel.ID.visit(this);
     }
+  }
+
+  public Type getType_nodeExpressao(nodeExpressao expressao) {
+    return null;
+  }
+  public Type getType_nodeExpressaoSimples(nodeExpressaoSimples expressao) {
+    return null;
+  }
+  public Type getType_nodeFator(nodeFator fator) {
+    return null;
+  }
+  public Type getType_nodeLiteral(nodeLiteral literal) {
+    return null;
+  }
+  public Type getType_nodeTermo(nodeTermo termo) {
+    return null;
+  }
+  public Type getType_nodeVariavel(nodeVariavel variavel) {
+    return null;
   }
 
 }
