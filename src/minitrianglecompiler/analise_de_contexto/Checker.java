@@ -21,14 +21,17 @@ public class Checker implements Visitor {
     @Override
     public void visit_nodeComandoAtribuicao(nodeComandoAtribuicao comando) {
         if (comando != null) {
+
             Attribute atributo = identificationTable.retrieve(comando.variavel.ID.valor);
             if(atributo != null) {
                 comando.declaracaoDeVariavel = atributo.declaracaoDeVariavel;
             } else {
                 // Erro variável não declarada
-                System.out.println("A variável " + comando.variavel.ID.valor + " não foi declarada!");
+                System.out.println("A variável \"" + comando.variavel.ID.valor + "\" não foi declarada!");
             }
-            comando.expressao.visit(this);
+
+            Type tipoExpressao = comando.expressao.getType(this);
+            if(tipoExpressao.equals(comando.variavel.tipo));
         }
     }
 
@@ -93,11 +96,15 @@ public class Checker implements Visitor {
         for (int i = 0; i < declaracao.IDs.size(); i++) {
             if (identificationTable.retrieve(declaracao.IDs.get(i).valor) == null) {
                 
-                identificationTable.enter(declaracao.IDs.get(i).valor, declaracao);
+                identificationTable.enter(
+                    declaracao.IDs.get(i).valor,
+                    declaracao.tipo.tipoSimples.tipoType,
+                    declaracao
+                );
                 declaracao.IDs.get(i).visit(this);
             } else {
                 // Erro variavel já declarada
-                System.out.println("Variável " + declaracao.IDs.get(i).valor + " já declarada!");
+                System.out.println("Variável \"" + declaracao.IDs.get(i).valor + "\" já declarada!");
             }
         }
     }
@@ -233,8 +240,18 @@ public class Checker implements Visitor {
     }
 
     public Type getType_nodeExpressao(nodeExpressao expressao) {
+
+        Type typeExpresaoSimples1, typeExpresaoSimples2;
+
+        if(expressao != null) {
+            typeExpresaoSimples1 = expressao.expressaoSimples1.getType(this);
+            typeExpresaoSimples2 = expressao.expressaoSimples2.getType(this);
+
+            return Type.evaluate(typeExpresaoSimples1, typeExpresaoSimples2);
+        }
         return null;
     }
+
     public Type getType_nodeExpressaoSimples(nodeExpressaoSimples expressao) {
         return null;
     }

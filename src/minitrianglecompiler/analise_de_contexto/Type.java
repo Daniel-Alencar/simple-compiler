@@ -13,4 +13,24 @@ public class Type {
         Type otherType = (Type) other;
         return (kind == otherType.kind);
     }
+
+    public static Type evaluate(Type tipo1, Type tipo2) {
+        return new Type(Type.BOOL);
+    }
+
+    public static Type evaluateString(String tipoString) {
+        Type tipo = null;
+
+        if(tipoString.equals("real")) {
+            tipo = new Type(Type.REAL);
+
+        } else if(tipoString.equals("boolean")) {
+            tipo = new Type(Type.BOOL);
+            
+        } else if(tipoString.equals("integer")) {
+            tipo = new Type(Type.INT);
+
+        }
+        return tipo;
+    }
 }

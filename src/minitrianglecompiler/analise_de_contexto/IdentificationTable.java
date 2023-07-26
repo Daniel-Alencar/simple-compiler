@@ -20,15 +20,9 @@ public class IdentificationTable {
     return null;
   }
 
-  public void enter(String id, nodeDeclaracaoDeVariavel declaracaoDeVariavel) {
-    this.data.add(new Attribute(id, declaracaoDeVariavel));
+  public void enter(String id, Type tipo, nodeDeclaracaoDeVariavel declaracaoDeVariavel) {
+    this.data.add(new Attribute(id, tipo, declaracaoDeVariavel));
   }
-
-  public void enter(String id, Attribute attribute) {
-    attribute.identifier = id;
-    this.data.add(attribute);
-  }
-
 
   public void printTable() {
     System.out.println("Tabela de Identificação de símbolos:");

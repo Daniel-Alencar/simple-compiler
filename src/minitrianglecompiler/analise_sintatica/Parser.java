@@ -204,10 +204,10 @@ public class Parser {
       case Token.FLOATLITERAL:
         tipo = new Type(Type.REAL);
 
-        case Token.INTLITERAL:
+      case Token.INTLITERAL:
         tipo = new Type(Type.INT);
         
-        case Token.BOOLLITERAL:
+      case Token.BOOLLITERAL:
         tipo = new Type(Type.BOOL);
         
         nodeLiteral aux2 = new nodeLiteral(
@@ -328,10 +328,11 @@ public class Parser {
   private nodeTipo parse_tipo() {
     nodeTipo tipo = new nodeTipo();
 
-    tipo.tipoSimples = new nodeTipoSimples();
-    tipo.tipoSimples.tipo = arrayOfTokens.get(currentIndex).spelling;
-    accept(Token.TIPOSIMPLES);
+    String tipoString = arrayOfTokens.get(currentIndex).spelling;
+    Type tipoType = Type.evaluateString(tipoString);
+    tipo.tipoSimples = new nodeTipoSimples(tipoString, tipoType);
 
+    accept(Token.TIPOSIMPLES);
     return tipo;
   }
 

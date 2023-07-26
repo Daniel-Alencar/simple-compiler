@@ -1,6 +1,8 @@
 package minitrianglecompiler.visitor;
 import java.util.ArrayList;
 
+import minitrianglecompiler.analise_de_contexto.Type;
+
 public class nodeExpressaoSimples {
   public nodeTermo termo;
 
@@ -9,5 +11,9 @@ public class nodeExpressaoSimples {
 
   public void visit(Visitor visitor) {
     visitor.visit_nodeExpressaoSimples(this);
+  }
+
+  public Type getType(Visitor visitor) {
+    return visitor.getType_nodeExpressaoSimples(this);
   }
 }
