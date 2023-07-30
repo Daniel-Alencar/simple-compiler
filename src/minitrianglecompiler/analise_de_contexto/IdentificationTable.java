@@ -21,6 +21,7 @@ public class IdentificationTable {
   }
 
   public void enter(String id, Type tipo, nodeDeclaracaoDeVariavel declaracaoDeVariavel) {
+    System.out.println("TIPO: " + tipo.kind);
     this.data.add(new Attribute(id, tipo, declaracaoDeVariavel));
   }
 

@@ -157,8 +157,9 @@ public class Parser {
 
     if (currentTokenId == Token.RELATIONALOPERATOR) {
       nodeOperadorRelacional operadorRelacional = new nodeOperadorRelacional(
-          arrayOfTokens.get(currentTokenId).spelling);
-      operadorRelacional.operador = currentTokenId;
+        arrayOfTokens.get(currentTokenId).spelling,
+        Token.RELATIONALOPERATOR
+      );
       expressao.operadorRelacional = operadorRelacional;
 
       acceptIt();
@@ -176,8 +177,10 @@ public class Parser {
     expressaoSimples.termos = new ArrayList<nodeTermo>();
 
     while (currentTokenId == Token.ADITIONALOPERATOR) {
-      nodeOperadorAditivo operadorAditivo = new nodeOperadorAditivo(arrayOfTokens.get(currentIndex).spelling);
-      operadorAditivo.operador = currentTokenId;
+      nodeOperadorAditivo operadorAditivo = new nodeOperadorAditivo(
+        arrayOfTokens.get(currentIndex).spelling,
+        Token.ADITIONALOPERATOR
+      );
       expressaoSimples.operadoresAditivos.add(operadorAditivo);
 
       acceptIt();
@@ -313,9 +316,11 @@ public class Parser {
 
     termo.fator = parse_fator();
     while (currentTokenId == Token.MULTIPLICATIONALOPERATOR) {
-      nodeOperadorMultiplicativo operadorMultiplicativo = new nodeOperadorMultiplicativo(
-          arrayOfTokens.get(currentIndex).spelling);
-      operadorMultiplicativo.operador = currentTokenId;
+      nodeOperadorMultiplicativo operadorMultiplicativo = 
+      new nodeOperadorMultiplicativo(
+        arrayOfTokens.get(currentIndex).spelling,
+        Token.MULTIPLICATIONALOPERATOR
+      );
       termo.operadoresMultiplicativos.add(operadorMultiplicativo);
 
       acceptIt();

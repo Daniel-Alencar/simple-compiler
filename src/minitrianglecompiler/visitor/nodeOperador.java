@@ -1,12 +1,12 @@
 package minitrianglecompiler.visitor;
 
 public abstract class nodeOperador {
-  public int operador;
-
+  public byte operador;
   String valor;
 
-  public nodeOperador(String valor) {
+  public nodeOperador(String valor, byte tokenDeOperador) {
     this.valor = valor;
+    this.operador = tokenDeOperador;
   }
 
   public void visit(Visitor visitor) {

@@ -31,7 +31,19 @@ public class Checker implements Visitor {
             }
 
             Type tipoExpressao = comando.expressao.getType(this);
-            if(tipoExpressao.equals(comando.variavel.tipo));
+            if(comando.variavel != null) {
+
+                System.out.println("Tipo da expressao: " + tipoExpressao.kind);
+                System.out.println("Tipo do atributo: " + atributo.tipo.kind);
+
+                if(tipoExpressao.equals(atributo.tipo)) {
+                    System.out.println("Tipo de atribuição válida!");
+                } else {
+                    System.out.println("Tipo de atribuição inválida!");
+                }
+            } else {
+                System.out.println("Variavel com valor NULL!");
+            }
         }
     }
 
@@ -95,6 +107,8 @@ public class Checker implements Visitor {
         // Talvez visitar o nodeTipo
         for (int i = 0; i < declaracao.IDs.size(); i++) {
             if (identificationTable.retrieve(declaracao.IDs.get(i).valor) == null) {
+
+                System.out.println("Nome e tipo da Variavel: " + declaracao.IDs.get(i).valor + "," + declaracao.tipo.tipoSimples.tipoType.kind);
                 
                 identificationTable.enter(
                     declaracao.IDs.get(i).valor,
@@ -244,26 +258,40 @@ public class Checker implements Visitor {
         Type typeExpresaoSimples1, typeExpresaoSimples2;
 
         if(expressao != null) {
-            typeExpresaoSimples1 = expressao.expressaoSimples1.getType(this);
-            typeExpresaoSimples2 = expressao.expressaoSimples2.getType(this);
+            if(expressao.expressaoSimples1 != null) {
+                typeExpresaoSimples1 = expressao.expressaoSimples1.getType(this);
 
-            return Type.evaluate(typeExpresaoSimples1, typeExpresaoSimples2);
+                if(expressao.expressaoSimples2 != null) {
+                    typeExpresaoSimples2 = expressao.expressaoSimples2.getType(this);
+                    
+                    return Type.evaluate(
+                        typeExpresaoSimples1, 
+                        typeExpresaoSimples2, 
+                        expressao.operadorRelacional
+                    );
+                }
+                return typeExpresaoSimples1;
+            }
         }
         return null;
     }
 
     public Type getType_nodeExpressaoSimples(nodeExpressaoSimples expressao) {
-        return null;
+        return new Type(Type.BOOL);
     }
+
     public Type getType_nodeFator(nodeFator fator) {
         return null;
     }
+
     public Type getType_nodeLiteral(nodeLiteral literal) {
         return null;
     }
+
     public Type getType_nodeTermo(nodeTermo termo) {
         return null;
     }
+    
     public Type getType_nodeVariavel(nodeVariavel variavel) {
         return null;
     }
