@@ -4,7 +4,7 @@ var variable1 , variable2  : real;
 !var variable2 : real;
 !var variable2 : integer;
 begin
-  variable1 := 750.2 + .89;
+  variable1 := 750.2 + 0.89;
 end
 
 .

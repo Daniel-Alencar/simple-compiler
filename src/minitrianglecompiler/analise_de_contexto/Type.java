@@ -14,7 +14,7 @@ public class Type {
 
     public boolean equals(Object other) {
         Type otherType = (Type) other;
-        
+
         return (this.kind == otherType.kind);
     }
 
@@ -22,7 +22,7 @@ public class Type {
         byte kind1 = tipo1.kind;
         byte kind2 = tipo2.kind;
 
-        // Regras 
+        // Regras
         // (real, boolean e integer)
         // (relacional(==), multiplicativo(*) e aditivo(+))
 
@@ -39,18 +39,22 @@ public class Type {
         // real == real = bool
 
         // OBS.: O BOOLEANO SÓ SE RELACIONA COM UM BOLEANO E UM OPERADOR RELACIONAL
-        if(kind1 == kind2 && operador.operador == Token.RELATIONALOPERATOR) {
+        if (kind1 == kind2 && operador.operador == Token.RELATIONALOPERATOR) {
             return new Type(Type.BOOL);
         }
-        if(
-            kind1 != Type.BOOL && kind2 != Type.BOOL &&
-            operador.operador == Token.RELATIONALOPERATOR
-        ) {
-            return new Type(Type.BOOL);
-        }
+        // INTEIRO ou REAL
+        if (kind1 != Type.BOOL && kind2 != Type.BOOL) {
+            // CASO SEJA UMA OPERAÇÃO RELACIONAL
+            if (operador.operador == Token.RELATIONALOPERATOR) {
+                return new Type(Type.BOOL);
+                // CASO SEJA UM INTEIRO E UM REAL
+            } else if (kind1 != kind2) {
+                return new Type(Type.REAL);
+                // CASO AMBOS OS TIPOS SEJAM IGUAIS
+            } else if (kind1 == kind2) {
+                return new Type(kind1);
 
-        if(kind1 == kind2) {
-            return new Type(kind1);
+            }
         }
         return null;
 
@@ -59,13 +63,13 @@ public class Type {
     public static Type evaluateString(String tipoString) {
         Type tipo = null;
 
-        if(tipoString.equals("real")) {
+        if (tipoString.equals("real")) {
             tipo = new Type(Type.REAL);
 
-        } else if(tipoString.equals("boolean")) {
+        } else if (tipoString.equals("boolean")) {
             tipo = new Type(Type.BOOL);
-            
-        } else if(tipoString.equals("integer")) {
+
+        } else if (tipoString.equals("integer")) {
             tipo = new Type(Type.INT);
 
         }
