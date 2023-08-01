@@ -31,7 +31,7 @@ public class Type {
         // integer == real = bool
 
         // integer + integer = integer
-        // integer * integer = real
+        // integer * integer = integer
         // integer == integer = bool
 
         // real + real = real
@@ -47,10 +47,10 @@ public class Type {
             // CASO SEJA UMA OPERAÇÃO RELACIONAL
             if (operador.operador == Token.RELATIONALOPERATOR) {
                 return new Type(Type.BOOL);
-                // CASO SEJA UM INTEIRO E UM REAL
+            // CASO SEJA UM INTEIRO E UM REAL
             } else if (kind1 != kind2) {
                 return new Type(Type.REAL);
-                // CASO AMBOS OS TIPOS SEJAM IGUAIS
+            // CASO AMBOS OS TIPOS SEJAM IGUAIS
             } else if (kind1 == kind2) {
                 return new Type(kind1);
 

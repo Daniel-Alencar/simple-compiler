@@ -20,7 +20,9 @@ public class Parser {
   }
 
   private void accept(int tokenId) {
+    // FIXME: corrigir erro
     System.out.println("Current Token on Array: " + arrayOfTokens.get(currentIndex).spelling);
+    System.out.println("Erro no tokenId");
 
     if (tokenId == currentTokenId) {
       currentIndex++;
@@ -194,6 +196,7 @@ public class Parser {
   private nodeFator parse_fator() {
     nodeFator fator = null;
     Type tipo;
+    nodeLiteral aux2;
     
     switch (currentTokenId) {
       case Token.IDENTIFIER:
@@ -206,14 +209,27 @@ public class Parser {
 
       case Token.FLOATLITERAL:
         tipo = new Type(Type.REAL);
+        aux2 = new nodeLiteral(
+          arrayOfTokens.get(currentIndex).spelling, tipo
+        );
+        fator = aux2;
+
+        acceptIt();
+        break;
 
       case Token.INTLITERAL:
         tipo = new Type(Type.INT);
+        aux2 = new nodeLiteral(
+          arrayOfTokens.get(currentIndex).spelling, tipo
+        );
+        fator = aux2;
+
+        acceptIt();
+        break;
         
       case Token.BOOLLITERAL:
         tipo = new Type(Type.BOOL);
-        
-        nodeLiteral aux2 = new nodeLiteral(
+        aux2 = new nodeLiteral(
           arrayOfTokens.get(currentIndex).spelling, tipo
         );
         fator = aux2;
@@ -241,6 +257,7 @@ public class Parser {
   private nodeComandoIterativo parse_iterativo() {
     nodeComandoIterativo comandoIterativo = new nodeComandoIterativo();
 
+    System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     accept(Token.WHILE);
     comandoIterativo.expressao = parse_expressao();
     accept(Token.DO);

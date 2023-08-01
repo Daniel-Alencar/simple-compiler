@@ -32,10 +32,8 @@ public class Checker implements Visitor {
             }
 
             Type tipoExpressao = getType_nodeExpressao(comando.expressao);
-            if (comando.variavel != null) {
 
-                System.out.println("Tipo da expressao: " + tipoExpressao.kind);
-                System.out.println("Tipo do atributo: " + atributo.tipo.kind);
+            if (comando.variavel != null && tipoExpressao != null) {
 
                 if (tipoExpressao.equals(atributo.tipo)) {
                     System.out.println("Tipo de atribuição válida!");
@@ -62,7 +60,10 @@ public class Checker implements Visitor {
     @Override
     public void visit_nodeComandoCondicional(nodeComandoCondicional comando) {
         if (comando != null) {
-            if (comando.expressao != null && this.getType_nodeExpressao(comando.expressao).kind == Type.BOOL) {
+            if (
+                comando.expressao != null && 
+                this.getType_nodeExpressao(comando.expressao).kind == Type.BOOL
+            ) {
                 // verificar se a expressão é booleana
                 if (comando.comando1 != null) {
                     comando.comando1.visit(this);
@@ -262,6 +263,7 @@ public class Checker implements Visitor {
 
     public Type getType_nodeExpressao(nodeExpressao expressao) {
         Type typeExpresaoSimples1, typeExpresaoSimples2;
+        Type type = null;
 
         if (expressao != null) {
             if (expressao.expressaoSimples1 != null) {
@@ -269,20 +271,22 @@ public class Checker implements Visitor {
 
                 if (expressao.expressaoSimples2 != null) {
                     typeExpresaoSimples2 = getType_nodeExpressaoSimples(expressao.expressaoSimples2);
-
-                    return Type.evaluate(typeExpresaoSimples1, typeExpresaoSimples2, expressao.operadorRelacional);
+                    
+                    type = Type.evaluate(typeExpresaoSimples1, typeExpresaoSimples2, expressao.operadorRelacional);
                 }
-                return typeExpresaoSimples1;
+                type = typeExpresaoSimples1;
             }
         }
-        return null;
+        System.out.println("getType_nodeExpressao: " + type);
+        return type;
     }
 
     public Type getType_nodeExpressaoSimples(nodeExpressaoSimples expressao) {
+        Type type = null;
         if (expressao != null) {
             // CASO TENHA UM TERMO SÓ
             if (expressao.termo != null && expressao.operadoresAditivos.isEmpty()) {
-                return getType_nodeTermo(expressao.termo);
+                type = getType_nodeTermo(expressao.termo);
             }
 
             Type tipoResultado = null;
@@ -298,92 +302,84 @@ public class Checker implements Visitor {
                 if (tipoResultado == null) {
                     tipoResultado = tipoTermo;
                 } else {
+                    
                     if (!tipoResultado.equals(tipoTermo)
-                            || expressao.operadoresAditivos.get(i).operador != Token.ADITIONALOPERATOR) {
+                        || expressao.operadoresAditivos.get(i).operador != Token.ADITIONALOPERATOR
+                    ) {
                         System.out.println("Erro: tipos incompatíveis na operação aditiva");
                         return null;
                     }
                 }
             }
-
+            
             return tipoResultado;
         }
-        return null;
+        
+        System.out.println("getType_nodeExpressaoSimples: " + type);
+        return type;
     }
 
     public Type getType_nodeFator(nodeFator fator) {
+        Type type = null;
         if (fator instanceof nodeVariavel) {
-            return getType_nodeVariavel((nodeVariavel) fator);
+            type = getType_nodeVariavel((nodeVariavel) fator);
         } else if (fator instanceof nodeLiteral) {
-            return getType_nodeLiteral((nodeLiteral) fator);
+            type = getType_nodeLiteral((nodeLiteral) fator);
         } else if (fator instanceof nodeExpressao) {
-            return getType_nodeExpressao((nodeExpressao) fator);
+            type = getType_nodeExpressao((nodeExpressao) fator);
         }
 
-        return null;
+        System.out.println("getType_nodeFator: " + type);
+        return type;
     }
 
     public Type getType_nodeLiteral(nodeLiteral literal) {
+        Type type = null;
         if (literal != null) {
-            if (literal.tipo.kind == Type.BOOL) {
-                return new Type(Type.BOOL);
-            } else if (literal.tipo.kind == Type.INT) {
-                return new Type(Type.INT);
-            } else if (literal.tipo.kind == Type.REAL) {
-                return new Type(Type.REAL);
-            }
+            type = literal.tipo;
         }
-        return null;
+        System.out.println("getType_nodeLiteral: " + type.kind);
+        return type;
     }
 
     public Type getType_nodeTermo(nodeTermo termo) {
+        Type type = null;
         if (termo != null) {
             // CASO TENHA UM FATOR SÓ
             if (termo.fator != null && termo.fatores.isEmpty()) {
-                return getType_nodeFator(termo.fator);
+                type = getType_nodeFator(termo.fator);
             }
 
-            Type tipoResultado = null, tipoFatorAnterior = null;
+            Type tipoResultado = null;
+            Type tipoFatorAnterior = getType_nodeFator(termo.fator);
 
             for (int i = 0; i < termo.fatores.size(); i++) {
                 nodeFator fator = termo.fatores.get(i);
+
                 Type tipoFator = getType_nodeFator(fator);
+                nodeOperador operador = termo.operadoresMultiplicativos.get(i);
 
-                if (tipoFatorAnterior != null && !tipoFatorAnterior.equals(tipoFator)) {
-                    System.out.println("Erro: tipos incompatíveis nos fatores do termo");
-                }
-
-                if (tipoResultado == null) {
-                    tipoResultado = tipoFator;
-                } else {
-                    if (i > 0
-                            && termo.operadoresMultiplicativos.get(i - 1).operador == Token.MULTIPLICATIONALOPERATOR) {
-                        // integer * real = real
-                        // integer * integer = real
-                        // real * real = real
-                        if (tipoResultado.kind == Type.INT && tipoFator.kind == Type.REAL) {
-                            tipoResultado = new Type(Type.REAL);
-                        }
-                    }
-                }
-
-                tipoFatorAnterior = tipoFator;
+                tipoFatorAnterior = Type.evaluate(tipoFatorAnterior, tipoFator, operador);
             }
-            return tipoResultado;
+            tipoResultado = tipoFatorAnterior;
+            type = tipoResultado;
         }
-
-        return null;
+        System.out.println("getType_nodeTermo: " + type);
+        return type;
     }
 
     public Type getType_nodeVariavel(nodeVariavel variavel) {
+        Type type = null;
+
         if (variavel != null && variavel.ID != null) {
             Attribute atributo = identificationTable.retrieve(variavel.ID.valor);
             if (atributo != null) {
-                return atributo.tipo;
+                type = atributo.tipo;
             } else {
                 System.out.println("Erro: variável \"" + variavel.ID.valor + "\" não declarada!");
             }
         }
-        return null;
+        System.out.println("getType_nodeVariavel: " + type);
+        return type;
     }
 }
