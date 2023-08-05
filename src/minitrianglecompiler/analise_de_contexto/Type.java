@@ -18,23 +18,37 @@ public class Type {
         return (this.kind == otherType.kind);
     }
 
+    public static String convertTypeToString(byte tipo) {
+        switch(tipo) {
+            case BOOL:
+                return "BOOLEAN";
+            case REAL:
+                return "REAL";
+            case INT:
+                return "INTEGER";
+            default:
+                return "null";
+        }
+    }
+
     public static Type evaluate(
         Type tipo1, Type tipo2, nodeOperador operador
     ) {
+        System.out.println("Avaliação da expressão:");
         if(tipo1 == null) {
             System.out.println("Tipo1 é NULL!");
         }
         if(tipo2 == null) {
             System.out.println("Tipo2 é NULL!");
         }
+        System.out.println(
+            convertTypeToString(tipo1.kind) + " " + 
+            operador.valor + " " + 
+            convertTypeToString(tipo2.kind)
+        );
 
         byte kind1 = tipo1.kind;
         byte kind2 = tipo2.kind;
-
-        System.out.println(
-            "Avaliação da expressão: " + 
-            tipo1.kind + " " + operador.operador + " " + tipo2.kind + "\n"
-        );
 
         // REGRAS
         // (real, boolean e integer)

@@ -3,6 +3,10 @@ package minitrianglecompiler.visitor;
 public class nodeID {
   public String valor;
 
+  public nodeID(String valor) {
+    this.valor = valor;
+  }
+
   public void visit(Visitor visitor) {
     visitor.visit_nodeID(this);
   }

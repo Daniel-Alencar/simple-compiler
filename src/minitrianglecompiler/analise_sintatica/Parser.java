@@ -208,7 +208,9 @@ public class Parser {
     switch (currentTokenId) {
       case Token.IDENTIFIER:
         nodeVariavel aux1 = new nodeVariavel();
-        aux1.ID = new nodeID();
+        aux1.ID = new nodeID(
+          this.arrayOfTokens.get(currentIndex).spelling
+        );
         fator = aux1;
 
         acceptIt();
@@ -290,15 +292,20 @@ public class Parser {
   private ArrayList<nodeID> parse_listaDeIds() {
     ArrayList<nodeID> IDs = new ArrayList<>();
 
-    nodeID ID_aux1 = new nodeID();
+    nodeID ID_aux1 = new nodeID(
+      this.arrayOfTokens.get(currentIndex).spelling
+    );
     ID_aux1.valor = arrayOfTokens.get(currentIndex).spelling;
     IDs.add(ID_aux1);
+    
     accept(Token.IDENTIFIER);
 
     while (currentTokenId == Token.COMMA) {
       acceptIt();
 
-      nodeID ID_aux2 = new nodeID();
+      nodeID ID_aux2 = new nodeID(
+        this.arrayOfTokens.get(currentIndex).spelling
+      );
       ID_aux2.valor = arrayOfTokens.get(currentIndex).spelling;
       IDs.add(ID_aux2);
 
@@ -325,7 +332,9 @@ public class Parser {
     nodePrograma programaAST = new nodePrograma();
 
     accept(Token.PROGRAM);
-    programaAST.id = new nodeID();
+    programaAST.id = new nodeID(
+      this.arrayOfTokens.get(currentIndex).spelling
+    );
     programaAST.id.valor = arrayOfTokens.get(currentIndex).spelling;
     accept(Token.IDENTIFIER);
 
@@ -371,7 +380,9 @@ public class Parser {
   private nodeVariavel parse_variavel() {
     nodeVariavel variavel = new nodeVariavel();
 
-    variavel.ID = new nodeID();
+    variavel.ID = new nodeID(
+      this.arrayOfTokens.get(currentIndex).spelling
+    );
     variavel.ID.valor = arrayOfTokens.get(currentIndex).spelling;
     accept(Token.IDENTIFIER);
 

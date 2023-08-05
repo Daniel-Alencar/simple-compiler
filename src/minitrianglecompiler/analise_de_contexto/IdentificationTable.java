@@ -25,13 +25,13 @@ public class IdentificationTable {
   }
 
   public void printTable() {
-    System.out.println("\n");
-    System.out.println("Tabela de Identificação de símbolos:");
+    System.out.println();
+    System.out.println("---> Tabela de Identificação de símbolos:");
     for(int i = 0; i < data.size(); i++) {
       System.out.println(
         "-" + 
         data.get(i).identifier + " : " +
-        data.get(i).type
+        data.get(i).tipo.kind
       );
     }
   }

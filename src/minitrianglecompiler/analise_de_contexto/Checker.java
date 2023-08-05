@@ -1,6 +1,5 @@
 package minitrianglecompiler.analise_de_contexto;
 
-import minitrianglecompiler.Token;
 import minitrianglecompiler.visitor.*;
 
 public class Checker implements Visitor {
@@ -28,20 +27,17 @@ public class Checker implements Visitor {
                 comando.declaracaoDeVariavel = atributo.declaracaoDeVariavel;
             } else {
                 // Erro variável não declarada
-                System.out.println("A variável \"" + comando.variavel.ID.valor + "\" não foi declarada!");
+                System.out.println("ERRO: A variável \"" + comando.variavel.ID.valor + "\" não foi declarada\n");
             }
 
             Type tipoExpressao = getType_nodeExpressao(comando.expressao);
 
-            if (comando.variavel != null && tipoExpressao != null) {
-
-                if (tipoExpressao.equals(atributo.tipo)) {
-                    System.out.println("Tipo de atribuição válida!");
-                } else {
-                    System.out.println("Tipo de atribuição inválida!");
+            if (comando.variavel != null) {
+                if (!tipoExpressao.equals(atributo.tipo)) {
+                    System.out.println("ERRO: Tipo de atribuição inválida\n");
                 }
             } else {
-                System.out.println("Variavel com valor NULL!");
+                System.out.println("ERRO: A variável desse comando está com valor NULL\n");
             }
         }
     }
@@ -61,9 +57,6 @@ public class Checker implements Visitor {
     public void visit_nodeComandoCondicional(nodeComandoCondicional comando) {
         if (comando != null) {
             // Verificar se a expressão é booleana
-            System.out.println(
-                "Tipo da expressão"
-            );
             if (
                 comando.expressao != null && 
                 this.getType_nodeExpressao(comando.expressao).kind == Type.BOOL
@@ -75,7 +68,7 @@ public class Checker implements Visitor {
                     comando.comando2.visit(this);
                 }
             } else {
-                System.out.println("Erro, a expressão esperada deveria ser do tipo booleano");
+                System.out.println("ERRO: A expressão deveria ser do tipo BOOLEAN\n");
             }
         }
         // Erro semantico caso contrário
@@ -87,15 +80,13 @@ public class Checker implements Visitor {
             // Verificar se a expressão é booleana
             if (comando.expressao != null) {
                 Type tipo = this.getType_nodeExpressao(comando.expressao);
-                System.out.println(
-                    "Tipo da expressão: " + tipo.kind
-                );
+
                 if(tipo.kind == Type.BOOL) {
                     if (comando.comando != null) {
                         comando.comando.visit(this);
                     }
                 } else {
-                    System.out.println("A expressão esperada deveria ser BOOL");
+                    System.out.println("ERRO: A expressão deveria ser do tipo BOOLEAN\n");
                 }
             }
         }
@@ -131,7 +122,7 @@ public class Checker implements Visitor {
                 declaracao.IDs.get(i).visit(this);
             } else {
                 // Erro variavel já declarada
-                System.out.println("Variável \"" + declaracao.IDs.get(i).valor + "\" já declarada!");
+                System.out.println("ERRO: Variável \"" + declaracao.IDs.get(i).valor + "\" já declarada\n");
             }
         }
     }
@@ -274,55 +265,45 @@ public class Checker implements Visitor {
         if (expressao != null) {
             if (expressao.expressaoSimples1 != null) {
                 typeExpresaoSimples1 = getType_nodeExpressaoSimples(expressao.expressaoSimples1);
+                type = typeExpresaoSimples1;
 
                 if (expressao.expressaoSimples2 != null) {
                     typeExpresaoSimples2 = getType_nodeExpressaoSimples(expressao.expressaoSimples2);
-                    
-                    type = Type.evaluate(typeExpresaoSimples1, typeExpresaoSimples2, expressao.operadorRelacional);
+
+                    type = Type.evaluate(
+                        typeExpresaoSimples1, typeExpresaoSimples2, 
+                        expressao.operadorRelacional
+                    );
                 }
-                type = typeExpresaoSimples1;
+                return type;
             }
         }
-        System.out.println("getType_nodeExpressao: " + type);
         return type;
     }
 
-    public Type getType_nodeExpressaoSimples(nodeExpressaoSimples expressao) {
+    public Type getType_nodeExpressaoSimples(nodeExpressaoSimples expressaoSimples) {
         Type type = null;
-        if (expressao != null) {
-            // CASO TENHA UM TERMO SÓ
-            if (expressao.termo != null && expressao.operadoresAditivos.isEmpty()) {
-                type = getType_nodeTermo(expressao.termo);
-                return type;
-            }
+        if (expressaoSimples != null) {
 
-            Type tipoResultado = null;
-            for (int i = 0; i < expressao.operadoresAditivos.size(); i++) {
-                nodeTermo termo = expressao.termos.get(i);
-                Type tipoTermo = getType_nodeTermo(termo);
+            if (expressaoSimples.termo != null && expressaoSimples.operadoresAditivos.isEmpty()) {
+                type = getType_nodeTermo(expressaoSimples.termo);
+            } else {
+                Type tipoResultado = null;
+                Type tipoTermoAnterior = getType_nodeTermo(expressaoSimples.termo);
 
-                if (tipoTermo.kind != Type.INT && tipoTermo.kind != Type.REAL) {
-                    System.out.println("Erro: tipo inválido na operação aditiva");
-                    return null;
+                for (int i = 0; i < expressaoSimples.termos.size(); i++) {
+                    nodeTermo termo = expressaoSimples.termos.get(i);
+                    Type tipoTermo = getType_nodeTermo(termo);
+
+                    nodeOperador operador = expressaoSimples.operadoresAditivos.get(i);
+
+                    tipoTermoAnterior = Type.evaluate(tipoTermoAnterior, tipoTermo, operador);
                 }
-
-                if (tipoResultado == null) {
-                    tipoResultado = tipoTermo;
-                } else {
-                    
-                    if (!tipoResultado.equals(tipoTermo)
-                        || expressao.operadoresAditivos.get(i).operador != Token.ADITIONALOPERATOR
-                    ) {
-                        System.out.println("Erro: tipos incompatíveis na operação aditiva");
-                        return null;
-                    }
-                }
-            }
-            
-            return tipoResultado;
+                tipoResultado = tipoTermoAnterior;
+                type = tipoResultado;
+            }  
         }
         
-        System.out.println("getType_nodeExpressaoSimples: " + type);
         return type;
     }
 
@@ -336,7 +317,6 @@ public class Checker implements Visitor {
             type = getType_nodeExpressao((nodeExpressao) fator);
         }
 
-        System.out.println("getType_nodeFator: " + type);
         return type;
     }
 
@@ -345,33 +325,31 @@ public class Checker implements Visitor {
         if (literal != null) {
             type = literal.tipo;
         }
-        System.out.println("getType_nodeLiteral: " + type.kind);
         return type;
     }
 
     public Type getType_nodeTermo(nodeTermo termo) {
         Type type = null;
         if (termo != null) {
-            // CASO TENHA UM FATOR SÓ
+
             if (termo.fator != null && termo.fatores.isEmpty()) {
                 type = getType_nodeFator(termo.fator);
+            } else {
+                Type tipoResultado = null;
+                Type tipoFatorAnterior = getType_nodeFator(termo.fator);
+
+                for (int i = 0; i < termo.fatores.size(); i++) {
+                    nodeFator fator = termo.fatores.get(i);
+
+                    Type tipoFator = getType_nodeFator(fator);
+                    nodeOperador operador = termo.operadoresMultiplicativos.get(i);
+
+                    tipoFatorAnterior = Type.evaluate(tipoFatorAnterior, tipoFator, operador);
+                }
+                tipoResultado = tipoFatorAnterior;
+                type = tipoResultado;
             }
-
-            Type tipoResultado = null;
-            Type tipoFatorAnterior = getType_nodeFator(termo.fator);
-
-            for (int i = 0; i < termo.fatores.size(); i++) {
-                nodeFator fator = termo.fatores.get(i);
-
-                Type tipoFator = getType_nodeFator(fator);
-                nodeOperador operador = termo.operadoresMultiplicativos.get(i);
-
-                tipoFatorAnterior = Type.evaluate(tipoFatorAnterior, tipoFator, operador);
-            }
-            tipoResultado = tipoFatorAnterior;
-            type = tipoResultado;
         }
-        System.out.println("getType_nodeTermo: " + type);
         return type;
     }
 
@@ -383,10 +361,9 @@ public class Checker implements Visitor {
             if (atributo != null) {
                 type = atributo.tipo;
             } else {
-                System.out.println("Erro: variável \"" + variavel.ID.valor + "\" não declarada!");
+                System.out.println("ERRO: variável \"" + variavel.ID.valor + "\" não declarada\n");
             }
         }
-        System.out.println("getType_nodeVariavel: " + type);
         return type;
     }
 }
