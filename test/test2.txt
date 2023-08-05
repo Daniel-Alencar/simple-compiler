@@ -1,23 +1,22 @@
 program codigo;
-
 var variable1 , variable2  : real;
 var v1 : integer;
 var v2 : boolean;
-
+var let : real;
 begin
   variable1 := 750.2 + 0.89;
-
   while 1 > 0 do
   begin
-    variable1 := 750 - 89;
+    let := 750.2 - 89;
   end
-
-  if (1 >= 0.2) then
-    variable1 := 750.2 * 0.89;
+  if 1 > 0.2 then
+  begin
+    variable1 := (5 + 750.2) * 0.89;
+    v2 := variable1 > 2000;
+  end
   else
     variable1 := 750.2 / 0.89;
-
-  variable1 := v1 or 0.89;
+  variable := v1 or 0.89;
 end
 
 .

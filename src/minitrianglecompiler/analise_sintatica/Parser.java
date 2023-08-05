@@ -2,6 +2,7 @@ package minitrianglecompiler.analise_sintatica;
 
 import java.util.ArrayList;
 
+import minitrianglecompiler.ShowError;
 import minitrianglecompiler.Token;
 import minitrianglecompiler.analise_de_contexto.Type;
 import minitrianglecompiler.visitor.*;
@@ -20,14 +21,9 @@ public class Parser {
   }
 
   private void accept(int tokenId) {
-    // FIXME: corrigir erro
     System.out.println(
       "Current Token on Array: " + 
       arrayOfTokens.get(currentIndex).spelling
-    );
-    System.out.println(
-      "currentTokenId:" + currentTokenId + "," +
-      "TokenID:" + tokenId + "\n"
     );
 
     if (tokenId == currentTokenId) {
@@ -36,29 +32,26 @@ public class Parser {
         currentTokenId = this.arrayOfTokens.get(currentIndex).kind;
       }
     } else {
-      showError("Not accepted token\n");
+      new ShowError("Símbolo não aceito: " + arrayOfTokens.get(currentIndex).spelling 
+      + "Linha: " + arrayOfTokens.get(currentIndex).line
+      + " Coluna: " + arrayOfTokens.get(currentIndex).column
+      );
     }
   }
 
   private void acceptIt() {
-    System.out.println("Current Token on Array: " + arrayOfTokens.get(currentIndex).spelling);
+    System.out.println(
+      "Current Token on Array: " + arrayOfTokens.get(currentIndex).spelling
+    );
     currentIndex++;
     if (this.arrayOfTokens.size() > currentIndex) {
       currentTokenId = this.arrayOfTokens.get(currentIndex).kind;
     }
   }
 
-  private void showError(String message) {
-    System.out.println(message);
-  }
-
-  private void showError() {
-    System.out.println("Erro sintático");
-  }
-
   // Regras da gramática LL1 como métodos
   private nodeComandoAtribuicao parse_atribuicao() {
-    nodeComandoAtribuicao comandoAtribuicao = new nodeComandoAtribuicao();
+    nodeComandoAtribuicao comandoAtribuicao = new nodeComandoAtribuicao(this.arrayOfTokens.get(currentIndex));
 
     comandoAtribuicao.variavel = parse_variavel();
     accept(Token.BECOMES);
@@ -85,14 +78,22 @@ public class Parser {
         comando = parse_comandoComposto();
         break;
       default:
-        showError("parse comando");
+        new ShowError(
+          "Comando que começa com \"" + 
+          arrayOfTokens.get(currentIndex).spelling + 
+          "\" não identificado" 
+          + "Linha: " + arrayOfTokens.get(currentIndex).line 
+      + " Coluna: " + arrayOfTokens.get(currentIndex).column
+        );
         comando = null;
     }
     return comando;
   }
 
   private nodeComandoComposto parse_comandoComposto() {
-    nodeComandoComposto comandoComposto = new nodeComandoComposto();
+    nodeComandoComposto comandoComposto = new nodeComandoComposto(
+      arrayOfTokens.get(currentIndex)
+    );
 
     accept(Token.BEGIN);
     comandoComposto.comandos = parse_listaDeComandos();
@@ -102,7 +103,7 @@ public class Parser {
   }
 
   private nodeComandoCondicional parse_condicional() {
-    nodeComandoCondicional condicional = new nodeComandoCondicional();
+    nodeComandoCondicional condicional = new nodeComandoCondicional(this.arrayOfTokens.get(currentIndex));
 
     accept(Token.IF);
     condicional.expressao = parse_expressao();
@@ -158,15 +159,16 @@ public class Parser {
   }
 
   private nodeExpressao parse_expressao() {
-    nodeExpressao expressao = new nodeExpressao();
+    nodeExpressao expressao = new nodeExpressao(this.arrayOfTokens.get(currentIndex));
 
     expressao.expressaoSimples1 = parse_expressaoSimples();
     expressao.operadorRelacional = null;
     expressao.expressaoSimples2 = null;
 
     if (currentTokenId == Token.RELATIONALOPERATOR) {
+
       nodeOperadorRelacional operadorRelacional = new nodeOperadorRelacional(
-        arrayOfTokens.get(currentTokenId).spelling,
+        arrayOfTokens.get(currentIndex).spelling,
         Token.RELATIONALOPERATOR
       );
       expressao.operadorRelacional = operadorRelacional;
@@ -207,9 +209,12 @@ public class Parser {
     
     switch (currentTokenId) {
       case Token.IDENTIFIER:
-        nodeVariavel aux1 = new nodeVariavel();
-        aux1.ID = new nodeID(
-          this.arrayOfTokens.get(currentIndex).spelling
+        nodeVariavel aux1 = new nodeVariavel(
+          new nodeID(
+            this.arrayOfTokens.get(currentIndex).spelling,
+            this.arrayOfTokens.get(currentIndex)
+          ),
+          this.arrayOfTokens.get(currentIndex)
         );
         fator = aux1;
 
@@ -249,7 +254,7 @@ public class Parser {
       case Token.LPAREN:
         acceptIt();
 
-        nodeExpressao expressao = new nodeExpressao();
+        nodeExpressao expressao = new nodeExpressao(this.arrayOfTokens.get(currentIndex));
         expressao = parse_expressao();
 
         accept(Token.RPAREN);
@@ -258,13 +263,17 @@ public class Parser {
         break;
 
       default:
-        showError("parse fator");
+        new ShowError("Erro no fator: " + arrayOfTokens.get(currentIndex).spelling + "Não identificado" 
+        + "Linha: " + arrayOfTokens.get(currentIndex).line  + "\""
+      + " Coluna: " + arrayOfTokens.get(currentIndex).column);
     }
     return fator;
   }
 
   private nodeComandoIterativo parse_iterativo() {
-    nodeComandoIterativo comandoIterativo = new nodeComandoIterativo();
+    nodeComandoIterativo comandoIterativo = new nodeComandoIterativo(
+      arrayOfTokens.get(currentIndex)
+    );
 
     accept(Token.WHILE);
     comandoIterativo.expressao = parse_expressao();
@@ -293,7 +302,8 @@ public class Parser {
     ArrayList<nodeID> IDs = new ArrayList<>();
 
     nodeID ID_aux1 = new nodeID(
-      this.arrayOfTokens.get(currentIndex).spelling
+      this.arrayOfTokens.get(currentIndex).spelling,
+      this.arrayOfTokens.get(currentIndex)
     );
     ID_aux1.valor = arrayOfTokens.get(currentIndex).spelling;
     IDs.add(ID_aux1);
@@ -304,7 +314,8 @@ public class Parser {
       acceptIt();
 
       nodeID ID_aux2 = new nodeID(
-        this.arrayOfTokens.get(currentIndex).spelling
+        this.arrayOfTokens.get(currentIndex).spelling, 
+        this.arrayOfTokens.get(currentIndex)
       );
       ID_aux2.valor = arrayOfTokens.get(currentIndex).spelling;
       IDs.add(ID_aux2);
@@ -324,7 +335,9 @@ public class Parser {
         acceptIt();
         break;
       default:
-        showError("parse outros");
+        new ShowError("Símbolo não aceito: " + arrayOfTokens.get(currentIndex).spelling
+        + "Linha: " + arrayOfTokens.get(currentIndex).line + "\""
+      + " Coluna: " + arrayOfTokens.get(currentIndex).column);
     }
   }
 
@@ -333,7 +346,8 @@ public class Parser {
 
     accept(Token.PROGRAM);
     programaAST.id = new nodeID(
-      this.arrayOfTokens.get(currentIndex).spelling
+      this.arrayOfTokens.get(currentIndex).spelling,
+      this.arrayOfTokens.get(currentIndex)
     );
     programaAST.id.valor = arrayOfTokens.get(currentIndex).spelling;
     accept(Token.IDENTIFIER);
@@ -378,12 +392,17 @@ public class Parser {
   }
 
   private nodeVariavel parse_variavel() {
-    nodeVariavel variavel = new nodeVariavel();
-
-    variavel.ID = new nodeID(
-      this.arrayOfTokens.get(currentIndex).spelling
+    
+    nodeID ID = new nodeID(
+      this.arrayOfTokens.get(currentIndex).spelling,
+      this.arrayOfTokens.get(currentIndex)
     );
-    variavel.ID.valor = arrayOfTokens.get(currentIndex).spelling;
+    ID.valor = arrayOfTokens.get(currentIndex).spelling;
+
+    nodeVariavel variavel = new nodeVariavel(
+      ID, arrayOfTokens.get(currentIndex)
+    );
+
     accept(Token.IDENTIFIER);
 
     return variavel;

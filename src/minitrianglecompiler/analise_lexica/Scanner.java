@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import minitrianglecompiler.ShowError;
 import minitrianglecompiler.Token;
 import minitrianglecompiler.analise_de_contexto.IdentificationTable;
 
@@ -19,7 +20,7 @@ public class Scanner {
 	private byte currentKind;
 	private StringBuffer currentSpelling;
         
-	private int currentLine;
+	private int currentLine = 1;
 	private int currentColumn;
 
 	public IdentificationTable table;
@@ -109,10 +110,9 @@ public class Scanner {
 		if(currentChar == expectedChar) {
 			currentSpelling.append(currentChar);
 			getNextCaracter();
-
+			
 		} else {
-			// Talvez seja feito outra coisa nesse bloco
-			System.out.println("Erro léxico!");
+			new ShowError("Caracter inválido: " + currentSpelling.append(currentChar));
 		}
 	}
 

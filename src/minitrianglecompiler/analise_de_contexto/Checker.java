@@ -1,5 +1,6 @@
 package minitrianglecompiler.analise_de_contexto;
 
+import minitrianglecompiler.ShowError;
 import minitrianglecompiler.visitor.*;
 
 public class Checker implements Visitor {
@@ -27,17 +28,26 @@ public class Checker implements Visitor {
                 comando.declaracaoDeVariavel = atributo.declaracaoDeVariavel;
             } else {
                 // Erro variável não declarada
-                System.out.println("ERRO: A variável \"" + comando.variavel.ID.valor + "\" não foi declarada\n");
+                new ShowError(
+                    "A variável "+ "\"" + 
+                comando.variavel.ID.valor + "\"" + " não foi declarada\n" 
+                + "Linha: " +  comando.variavel.token.line + "\""
+                + " Coluna: " + comando.variavel.token.column
+                );
+                
             }
 
             Type tipoExpressao = getType_nodeExpressao(comando.expressao);
 
             if (comando.variavel != null) {
                 if (!tipoExpressao.equals(atributo.tipo)) {
-                    System.out.println("ERRO: Tipo de atribuição inválida\n");
+                    new ShowError("Tipo de atribuição inválida: "
+                        + comando.token.spelling + "... \n"
+                        + "Linha: " + comando.token.line + " Coluna: " + comando.token.column 
+                    );
                 }
             } else {
-                System.out.println("ERRO: A variável desse comando está com valor NULL\n");
+                new ShowError("A variável desse comando está com valor NULL\n");
             }
         }
     }
@@ -68,13 +78,13 @@ public class Checker implements Visitor {
                     comando.comando2.visit(this);
                 }
             } else {
-                System.out.println("ERRO: A expressão deveria ser do tipo BOOLEAN\n");
+                new ShowError("A expressão do comando condicional deveria ser do tipo BOOLEAN\n" +
+                "Linha: " + comando.expressao.token.line + " Coluna: " + comando.expressao.token.column);
             }
         }
-        // Erro semantico caso contrário
     }
 
-    @Override
+   
     public void visit_nodeComandoIterativo(nodeComandoIterativo comando) {
         if (comando != null) {
             // Verificar se a expressão é booleana
@@ -86,7 +96,10 @@ public class Checker implements Visitor {
                         comando.comando.visit(this);
                     }
                 } else {
-                    System.out.println("ERRO: A expressão deveria ser do tipo BOOLEAN\n");
+                    new ShowError("A expressão deveria ser do tipo BOOLEAN\n"+ 
+                        "Linha: " + comando.expressao.token.line + " Coluna: " +
+                        comando.expressao.token.column
+                    );
                 }
             }
         }
@@ -122,7 +135,12 @@ public class Checker implements Visitor {
                 declaracao.IDs.get(i).visit(this);
             } else {
                 // Erro variavel já declarada
-                System.out.println("ERRO: Variável \"" + declaracao.IDs.get(i).valor + "\" já declarada\n");
+                new ShowError(
+                    "Variável \"" + declaracao.IDs.get(i).token.spelling + "\" já declarada\n" + 
+                    "Linha: " + declaracao.IDs.get(i).token.line + " Coluna: " 
+                    + declaracao.IDs.get(i).token.column
+                
+                );
             }
         }
     }
@@ -361,7 +379,12 @@ public class Checker implements Visitor {
             if (atributo != null) {
                 type = atributo.tipo;
             } else {
-                System.out.println("ERRO: variável \"" + variavel.ID.valor + "\" não declarada\n");
+                new ShowError(
+                    "Variável \"" + variavel.token.spelling + "\" + não declarada\n" + 
+                    "Linha: " + variavel.token.line + " Coluna: " 
+                    + variavel.token.column
+                
+                );
             }
         }
         return type;

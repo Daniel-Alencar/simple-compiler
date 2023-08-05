@@ -1,11 +1,17 @@
 package minitrianglecompiler.visitor;
 
+import minitrianglecompiler.Token;
 import minitrianglecompiler.analise_de_contexto.Type;
 
 public class nodeExpressao extends nodeFator {
   public nodeExpressaoSimples expressaoSimples1;
   public nodeOperadorRelacional operadorRelacional;
   public nodeExpressaoSimples expressaoSimples2;
+  public Token token;
+
+  public nodeExpressao(Token token) {
+    this.token = token;
+  }
 
   public void visit(Visitor visitor) {
     visitor.visit_nodeExpressao(this);
