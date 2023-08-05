@@ -27,13 +27,13 @@ public class MiniTriangleCompiler {
 				Token currentToken = scanner.scan();
 				arrayOfTokens.add(counter, currentToken);
 
-				System.out.println("TOKEN:");
-				System.out.println("speeling:" + currentToken.spelling);
-				System.out.println("kind:" + currentToken.kind);
-				System.out.println("line:" + currentToken.line);
-				System.out.println("column:" + currentToken.column);
+				// System.out.println("TOKEN:");
+				// System.out.println("speeling:" + currentToken.spelling);
+				// System.out.println("kind:" + currentToken.kind);
+				// System.out.println("line:" + currentToken.line);
+				// System.out.println("column:" + currentToken.column);
 
-				System.out.println();
+				// System.out.println();
 
 				counter++;
 			} while (scanner.isEOF() == false);
@@ -41,7 +41,15 @@ public class MiniTriangleCompiler {
 			System.out.println(e.getMessage());
 		}
 
-		System.out.println("Length of array: " + arrayOfTokens.size() + "\n");
+		for(int i = 0; i < arrayOfTokens.size(); i++ ) {
+			if(arrayOfTokens.get(i).kind == Token.ERROR) {
+				Token token = arrayOfTokens.get(i);
+				new ShowError(
+					"Token \"" + token.spelling + "\" inválido\n" + 
+					"Linha: " + token.line + " Coluna: " + token.column
+				);
+			}
+		}
 
 		Parser sintaticParser = new Parser(arrayOfTokens);
 		nodePrograma programaAST = sintaticParser.parse();
@@ -52,6 +60,5 @@ public class MiniTriangleCompiler {
 
 		Checker checker = new Checker();
 		checker.check(programaAST);
-		checker.identificationTable.printTable();
 	}
 }

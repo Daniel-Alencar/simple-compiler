@@ -21,10 +21,10 @@ public class Parser {
   }
 
   private void accept(int tokenId) {
-    System.out.println(
-      "Current Token on Array: " + 
-      arrayOfTokens.get(currentIndex).spelling
-    );
+    // System.out.println(
+    //   "Current Token on Array: " + 
+    //   arrayOfTokens.get(currentIndex).spelling
+    // );
 
     if (tokenId == currentTokenId) {
       currentIndex++;
@@ -32,17 +32,19 @@ public class Parser {
         currentTokenId = this.arrayOfTokens.get(currentIndex).kind;
       }
     } else {
-      new ShowError("Símbolo não aceito: " + arrayOfTokens.get(currentIndex).spelling 
-      + "Linha: " + arrayOfTokens.get(currentIndex).line
-      + " Coluna: " + arrayOfTokens.get(currentIndex).column
+      new ShowError(
+        "Símbolo não aceito: " + arrayOfTokens.get(currentIndex).spelling + "\n"
+        + "Linha: " + arrayOfTokens.get(currentIndex).line
+        + " Coluna: " + arrayOfTokens.get(currentIndex).column
       );
     }
   }
 
   private void acceptIt() {
-    System.out.println(
-      "Current Token on Array: " + arrayOfTokens.get(currentIndex).spelling
-    );
+    // System.out.println(
+    //   "Current Token on Array: " + arrayOfTokens.get(currentIndex).spelling
+    // );
+    
     currentIndex++;
     if (this.arrayOfTokens.size() > currentIndex) {
       currentTokenId = this.arrayOfTokens.get(currentIndex).kind;

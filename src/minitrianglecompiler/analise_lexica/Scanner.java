@@ -67,8 +67,7 @@ public class Scanner {
 			currentColumn = 1;
 			break;
 		case '\t':
-			// Incrementar a coluna por 4
-			currentColumn += 4;
+			currentColumn += 2;
 			break;
 		default:
 			currentColumn++;
@@ -242,19 +241,29 @@ public class Scanner {
 
 		} else if(isDigit(currentChar)) {
 			takeIt();
-
+			
 			while(isDigit(currentChar)) {
 				takeIt();
 			}
+
 			if(currentChar == '.') {
 				takeIt();
 
 				while(isDigit(currentChar)) {
 					takeIt();
 				}
-				return Token.FLOATLITERAL;
+
+				if(isLetter(currentChar)) {
+					return Token.ERROR;
+				} else {
+					return Token.FLOATLITERAL;
+				}
 			}
-			return Token.INTLITERAL;
+			if(isLetter(currentChar)) {
+				return Token.ERROR;
+			} else {
+				return Token.INTLITERAL;
+			}
 		}
 
 		if(currentChar == ':') {
@@ -349,6 +358,8 @@ public class Scanner {
 			return Token.EOT;
 		}
 
+		System.out.println("Aqui será um erro: " + currentChar);
+		takeIt();
 		return Token.ERROR;
 	}
 

@@ -9,7 +9,7 @@ public class Checker implements Visitor {
 
     public void check(nodePrograma programa) {
         System.out.println("");
-        System.out.println("---> Iniciando a análise da árvore");
+        // System.out.println("---> Análise da árvore");
         programa.visit(this);
     }
 

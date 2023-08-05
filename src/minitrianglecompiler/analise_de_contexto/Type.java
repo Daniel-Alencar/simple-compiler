@@ -34,18 +34,12 @@ public class Type {
     public static Type evaluate(
         Type tipo1, Type tipo2, nodeOperador operador
     ) {
-        System.out.println("Avaliação da expressão:");
         if(tipo1 == null) {
             System.out.println("Tipo1 é NULL!");
         }
         if(tipo2 == null) {
             System.out.println("Tipo2 é NULL!");
         }
-        System.out.println(
-            convertTypeToString(tipo1.kind) + " " + 
-            operador.valor + " " + 
-            convertTypeToString(tipo2.kind)
-        );
 
         byte kind1 = tipo1.kind;
         byte kind2 = tipo2.kind;
