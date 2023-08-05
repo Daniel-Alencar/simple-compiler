@@ -21,14 +21,18 @@ public class IdentificationTable {
   }
 
   public void enter(String id, Type tipo, nodeDeclaracaoDeVariavel declaracaoDeVariavel) {
-    System.out.println("TIPO: " + tipo.kind);
     this.data.add(new Attribute(id, tipo, declaracaoDeVariavel));
   }
 
   public void printTable() {
+    System.out.println("\n");
     System.out.println("Tabela de Identificação de símbolos:");
     for(int i = 0; i < data.size(); i++) {
-      System.out.println("-" + data.get(i).identifier);
+      System.out.println(
+        "-" + 
+        data.get(i).identifier + " : " +
+        data.get(i).type
+      );
     }
   }
 }

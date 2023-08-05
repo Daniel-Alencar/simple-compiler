@@ -115,9 +115,6 @@ public class Checker implements Visitor {
         for (int i = 0; i < declaracao.IDs.size(); i++) {
             if (identificationTable.retrieve(declaracao.IDs.get(i).valor) == null) {
 
-                System.out.println("Nome e tipo da Variavel: " + declaracao.IDs.get(i).valor + ","
-                        + declaracao.tipo.tipoSimples.tipoType.kind);
-
                 identificationTable.enter(
                         declaracao.IDs.get(i).valor,
                         declaracao.tipo.tipoSimples.tipoType,
