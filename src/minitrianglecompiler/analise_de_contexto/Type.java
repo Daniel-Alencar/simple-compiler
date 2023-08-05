@@ -18,11 +18,25 @@ public class Type {
         return (this.kind == otherType.kind);
     }
 
-    public static Type evaluate(Type tipo1, Type tipo2, nodeOperador operador) {
+    public static Type evaluate(
+        Type tipo1, Type tipo2, nodeOperador operador
+    ) {
+        if(tipo1 == null) {
+            System.out.println("Tipo1 é NULL!");
+        }
+        if(tipo2 == null) {
+            System.out.println("Tipo2 é NULL!");
+        }
+
         byte kind1 = tipo1.kind;
         byte kind2 = tipo2.kind;
 
-        // Regras
+        System.out.println(
+            "Avaliação da expressão: " + 
+            tipo1.kind + " " + operador.operador + " " + tipo2.kind + "\n"
+        );
+
+        // REGRAS
         // (real, boolean e integer)
         // (relacional(==), multiplicativo(*) e aditivo(+))
 
@@ -38,7 +52,8 @@ public class Type {
         // real * real = real
         // real == real = bool
 
-        // OBS.: O BOOLEANO SÓ SE RELACIONA COM UM BOLEANO E UM OPERADOR RELACIONAL
+        // OBS.: O BOOLEANO SÓ SE RELACIONA COM UM BOLEANO
+        // E UM OPERADOR RELACIONAL
         if (kind1 == kind2 && operador.operador == Token.RELATIONALOPERATOR) {
             return new Type(Type.BOOL);
         }

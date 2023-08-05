@@ -21,8 +21,14 @@ public class Parser {
 
   private void accept(int tokenId) {
     // FIXME: corrigir erro
-    System.out.println("Current Token on Array: " + arrayOfTokens.get(currentIndex).spelling);
-    System.out.println("Erro no tokenId");
+    System.out.println(
+      "Current Token on Array: " + 
+      arrayOfTokens.get(currentIndex).spelling
+    );
+    System.out.println(
+      "currentTokenId:" + currentTokenId + "," +
+      "TokenID:" + tokenId + "\n"
+    );
 
     if (tokenId == currentTokenId) {
       currentIndex++;
@@ -30,7 +36,7 @@ public class Parser {
         currentTokenId = this.arrayOfTokens.get(currentIndex).kind;
       }
     } else {
-      showError("Not accepted\n");
+      showError("Not accepted token\n");
     }
   }
 
@@ -57,6 +63,7 @@ public class Parser {
     comandoAtribuicao.variavel = parse_variavel();
     accept(Token.BECOMES);
     comandoAtribuicao.expressao = parse_expressao();
+    accept(Token.SEMICOLON);
 
     return comandoAtribuicao;
   }
@@ -257,7 +264,6 @@ public class Parser {
   private nodeComandoIterativo parse_iterativo() {
     nodeComandoIterativo comandoIterativo = new nodeComandoIterativo();
 
-    System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     accept(Token.WHILE);
     comandoIterativo.expressao = parse_expressao();
     accept(Token.DO);
@@ -269,9 +275,13 @@ public class Parser {
   private ArrayList<nodeComando> parse_listaDeComandos() {
     ArrayList<nodeComando> comandos = new ArrayList<>();
 
-    while (currentTokenId == Token.IDENTIFIER) {
+    while (
+      currentTokenId == Token.IDENTIFIER ||
+      currentTokenId == Token.IF ||
+      currentTokenId == Token.WHILE ||
+      currentTokenId == Token.BEGIN
+    ) {
       comandos.add(parse_comando());
-      accept(Token.SEMICOLON);
     }
 
     return comandos;

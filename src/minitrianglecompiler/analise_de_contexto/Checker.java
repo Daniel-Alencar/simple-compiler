@@ -60,11 +60,14 @@ public class Checker implements Visitor {
     @Override
     public void visit_nodeComandoCondicional(nodeComandoCondicional comando) {
         if (comando != null) {
+            // Verificar se a expressão é booleana
+            System.out.println(
+                "Tipo da expressão"
+            );
             if (
                 comando.expressao != null && 
                 this.getType_nodeExpressao(comando.expressao).kind == Type.BOOL
             ) {
-                // verificar se a expressão é booleana
                 if (comando.comando1 != null) {
                     comando.comando1.visit(this);
                 }
@@ -82,13 +85,18 @@ public class Checker implements Visitor {
     public void visit_nodeComandoIterativo(nodeComandoIterativo comando) {
         if (comando != null) {
             // Verificar se a expressão é booleana
-            if (comando.expressao != null && this.getType_nodeExpressao(comando.expressao).kind == Type.BOOL) {
-                if (comando.expressao != null) {
-                    comando.expressao.visit(this);
+            if (comando.expressao != null) {
+                Type tipo = this.getType_nodeExpressao(comando.expressao);
+                System.out.println(
+                    "Tipo da expressão: " + tipo.kind
+                );
+                if(tipo.kind == Type.BOOL) {
+                    if (comando.comando != null) {
+                        comando.comando.visit(this);
+                    }
+                } else {
+                    System.out.println("A expressão esperada deveria ser BOOL");
                 }
-            } else {
-                System.out.println("Erro, a expressão esperada deveria ser do tipo booleano");
-
             }
         }
     }
@@ -110,7 +118,8 @@ public class Checker implements Visitor {
 
     @Override
     public void visit_nodeDeclaracaoDeVariavel(nodeDeclaracaoDeVariavel declaracao) {
-        // Não precisa verificar se o Tipo é válido, o analisador léxico já cuida disso
+        // Não precisa verificar se o Tipo é válido,
+        // o analisador léxico já cuida disso
         // Talvez visitar o nodeTipo
         for (int i = 0; i < declaracao.IDs.size(); i++) {
             if (identificationTable.retrieve(declaracao.IDs.get(i).valor) == null) {
@@ -284,6 +293,7 @@ public class Checker implements Visitor {
             // CASO TENHA UM TERMO SÓ
             if (expressao.termo != null && expressao.operadoresAditivos.isEmpty()) {
                 type = getType_nodeTermo(expressao.termo);
+                return type;
             }
 
             Type tipoResultado = null;

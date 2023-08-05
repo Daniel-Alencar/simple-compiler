@@ -4,8 +4,7 @@ var variable1 , variable2  : real;
 var v1 : integer;
 begin
   variable1 := 750.2 + 0.89;
-
-  while (1 > 0) do
+  while 1 > 0 do
   begin
     variable1 := 750.2 + 0.89;
     variable2 := v1 * 0.89;
