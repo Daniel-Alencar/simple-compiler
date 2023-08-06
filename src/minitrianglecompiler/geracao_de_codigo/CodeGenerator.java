@@ -10,18 +10,40 @@ public class CodeGenerator implements Visitor {
     this.currentTargetCounter = 0;
   }
   
+  public String getNextLabel() {
+
+    this.currentTargetCounter++;
+
+    return "E_" + this.currentTargetCounter;
+  }
+
   public void template_comandoCondicional(nodeComandoCondicional comandoCondicional) {
-    this.evaluate(comandoCondicional.expressao);
-    this.printNextTarget();
-    this.printNextTarget();
-  }
+    String ifLabel = getNextLabel();
+    String elseLabel = getNextLabel();
+    String endLabel = getNextLabel();
 
-  public void evaluate(nodeExpressao expressao) {
-    
-  }
+    comandoCondicional.expressao.visit(this);
 
-  public void printNextTarget() {
-    System.out.println("E_" + this.currentTargetCounter + ":");
+    // JUMPIF (1)
+    System.out.println("JUMPIF (1) " + ifLabel);
+    System.out.println("JUMP " + elseLabel);
+
+    System.out.println(ifLabel + ":");
+    comandoCondicional.comando1.visit(this);
+
+    System.out.println("JUMP " + endLabel);
+
+    System.out.println("JUMP " + endLabel);
+
+    System.out.println(endLabel + ":");
+
+    if(comandoCondicional.comando2 != null) {
+      comandoCondicional.comando2.visit(this);
+    }
+    System.out.println(endLabel + ":");
+
+
+
   }
 
   public String convertOperadorToString(String operador) {
@@ -101,11 +123,44 @@ public class CodeGenerator implements Visitor {
   @Override
   public void visit_nodeComandoCondicional(nodeComandoCondicional comando) {
     
+    String elseLabel = this.getNextLabel();
+    String endLabel = this.getNextLabel();
+    // TODO: CRIAR A FUNCAO DE EMMIT 
+    comando.expressao.visit(this);
+
+    // JUMPIF (0)
+    System.out.println("JUMPIF (0) "+ elseLabel);
+
+    // JUMP FIM
+    System.out.println("JUMP " + endLabel);
+
+    // ELSE
+    System.out.println(elseLabel + ":");
+    if(comando.comando2 != null) {
+      comando.comando2.visit(this);
+    }
+
+    // FIM
+    System.out.println(endLabel +  ":");
+
   }
 
   @Override
   public void visit_nodeComandoIterativo(nodeComandoIterativo comando) {
-    
+   String loopLabel = this.getNextLabel();
+    String endLabel = this.getNextLabel();
+
+    System.out.println(loopLabel + ":");
+    comando.expressao.visit(this);
+    // JUMPIF
+    System.out.println("JUMPIF (0) " + endLabel);
+    comando.comando.visit(this);
+
+    // LOOP
+    System.out.println("JUMP " + loopLabel);
+
+    System.out.println(endLabel + ":");
+
   }
 
   @Override
