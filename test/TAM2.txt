@@ -6,7 +6,7 @@
 
   LOADL 750.2
   LOADL 0.89
-  CACL add
+  CALL add
   STORE 0[SB]
 
 E_0001:
