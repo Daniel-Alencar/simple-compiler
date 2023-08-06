@@ -1,7 +1,7 @@
 program codigo;
-var variable1,variable2:real;
-var v1:integer;
-var v2: boolean;
+var variable1, variable2 : real;
+var v1 : integer;
+var v2 : boolean;
 var let : real;
 begin
   variable1 := 750.2 + 0.89;

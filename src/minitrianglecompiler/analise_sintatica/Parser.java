@@ -21,10 +21,6 @@ public class Parser {
   }
 
   private void accept(int tokenId) {
-    // System.out.println(
-    //   "Current Token on Array: " + 
-    //   arrayOfTokens.get(currentIndex).spelling
-    // );
 
     if (tokenId == currentTokenId) {
       currentIndex++;
@@ -41,10 +37,7 @@ public class Parser {
   }
 
   private void acceptIt() {
-    // System.out.println(
-    //   "Current Token on Array: " + arrayOfTokens.get(currentIndex).spelling
-    // );
-    
+
     currentIndex++;
     if (this.arrayOfTokens.size() > currentIndex) {
       currentTokenId = this.arrayOfTokens.get(currentIndex).kind;
