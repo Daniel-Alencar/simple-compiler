@@ -20,6 +20,7 @@ E_0001:
   STORE 4[SB]
   JUMP E_0001
 
+// Comando condicional
 E_0002:
     LOADL 1
     LOADL 0.2
@@ -42,8 +43,9 @@ E_0003:
     LOADL 0.89
     CALL div
     STORE 0[SB]
-
 E_0004:
+
+// Comando de atribuição
   LOAD 4[SB]
   LOADL 0.89
   CALL or

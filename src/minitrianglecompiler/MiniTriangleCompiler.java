@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import minitrianglecompiler.analise_de_contexto.Checker;
 import minitrianglecompiler.analise_lexica.Scanner;
 import minitrianglecompiler.analise_sintatica.Parser;
-
+import minitrianglecompiler.geracao_de_codigo.CodeGenerator;
 import minitrianglecompiler.visitor.*;
 
 /**
@@ -26,14 +26,6 @@ public class MiniTriangleCompiler {
 			do {
 				Token currentToken = scanner.scan();
 				arrayOfTokens.add(counter, currentToken);
-
-				// System.out.println("TOKEN:");
-				// System.out.println("speeling:" + currentToken.spelling);
-				// System.out.println("kind:" + currentToken.kind);
-				// System.out.println("line:" + currentToken.line);
-				// System.out.println("column:" + currentToken.column);
-
-				// System.out.println();
 
 				counter++;
 			} while (scanner.isEOF() == false);
@@ -60,5 +52,8 @@ public class MiniTriangleCompiler {
 
 		Checker checker = new Checker();
 		checker.check(programaAST);
+
+		CodeGenerator codeGenerator = new CodeGenerator();
+		codeGenerator.printCode(programaAST);
 	}
 }
