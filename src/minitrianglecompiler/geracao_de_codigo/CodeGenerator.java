@@ -225,11 +225,10 @@ public class CodeGenerator implements Visitor {
         tamanhoVariavel = 1;
       } else if (tipoVariavel == Type.INT) {
         tamanhoVariavel = 2;
-      } else {
+      } else if (tipoVariavel == Type.REAL) {
         tamanhoVariavel = 4;
       }
       System.out.println("PUSH " + tamanhoVariavel);
-
       variavelTipoMap.put(variavelNome, "" + tipoVariavel);
       variavelEnderecoMap.put(variavelNome, "" + this.currentAddressCounter);
       this.currentAddressCounter += tamanhoVariavel;
