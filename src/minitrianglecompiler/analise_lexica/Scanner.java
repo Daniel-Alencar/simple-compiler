@@ -358,7 +358,6 @@ public class Scanner {
 			return Token.EOT;
 		}
 
-		System.out.println("Aqui será um erro: " + currentChar);
 		takeIt();
 		return Token.ERROR;
 	}
