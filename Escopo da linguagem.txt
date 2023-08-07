@@ -3,4 +3,3 @@ O seguintes blocos têm escopo:
 - Comando condicional
 - Comando iterativo
 - Comando composto
-- Corpo (talvez, acredito que não precisa)
