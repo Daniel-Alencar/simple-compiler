@@ -76,7 +76,6 @@ public class Type {
             // CASO AMBOS OS TIPOS SEJAM IGUAIS
             } else if (kind1 == kind2) {
                 return new Type(kind1);
-
             }
         }
         return null;

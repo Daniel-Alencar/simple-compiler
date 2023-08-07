@@ -14,7 +14,7 @@ import compiler.visitor.*;
  */
 public class Compiler {
 
-	public static String fileName = "/test/code1.txt";
+	public static String fileName = "/test/code0.txt";
 	public static int steps = 5;
 
 	/**
