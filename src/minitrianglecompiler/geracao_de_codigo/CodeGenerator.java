@@ -11,9 +11,17 @@ public class CodeGenerator implements Visitor {
   private Map<String, String> variavelEnderecoMap = new HashMap<>();
   private Map<String, String> variavelTipoMap = new HashMap<>();
   private int currentAddressCounter = 0;
+  private int tabulacao = 2;
 
   public CodeGenerator() {
     this.currentTargetCounter = 0;
+  }
+
+  public void printCodeLine(String line) {
+    for(int i = 0; i < tabulacao; i++) {
+      System.out.print(" ");
+    }
+    System.out.println(line);
   }
 
   private String getTipoVariavel(String variavel) {
@@ -21,6 +29,7 @@ public class CodeGenerator implements Visitor {
   }
 
   private void freeMemory() {
+    System.out.println();
     for (String variavelNome : variavelEnderecoMap.keySet()) {
       int tamanhoVariavel = 0;
       String tipo = variavelTipoMap.get(variavelNome);
@@ -32,8 +41,7 @@ public class CodeGenerator implements Visitor {
       } else {
         tamanhoVariavel = 4;
       }
-
-      System.out.println("POP " + tamanhoVariavel);
+      printCodeLine("POP " + tamanhoVariavel);
     }
   }
 
@@ -46,31 +54,6 @@ public class CodeGenerator implements Visitor {
     this.currentTargetCounter++;
 
     return "E_" + this.currentTargetCounter;
-  }
-
-  public void template_comandoCondicional(nodeComandoCondicional comandoCondicional) {
-    String ifLabel = getNextLabel();
-    String elseLabel = getNextLabel();
-    String endLabel = getNextLabel();
-
-    comandoCondicional.expressao.visit(this);
-
-    // JUMPIF (1)
-    System.out.println("JUMPIF (1) " + ifLabel);
-    System.out.println("JUMP " + elseLabel);
-
-    System.out.println(ifLabel + ":");
-    comandoCondicional.comando1.visit(this);
-
-    System.out.println("JUMP " + endLabel);
-
-    System.out.println(endLabel + ":");
-
-    if (comandoCondicional.comando2 != null) {
-      comandoCondicional.comando2.visit(this);
-    }
-    System.out.println(endLabel + ":");
-
   }
 
   public String convertOperadorToString(String operador) {
@@ -130,10 +113,10 @@ public class CodeGenerator implements Visitor {
         comando.expressao.visit(this);
       }
       if (comando.variavel != null) {
-        comando.variavel.visit(this);
+        // comando.variavel.visit(this);
         String variavelNome = ((nodeVariavel) comando.variavel).ID.valor;
         String endereco = getEnderecoVariavel(variavelNome);
-        System.out.print("STORE " + endereco + "[SB]" + "\n");
+        printCodeLine("STORE " + endereco + "[SB]");
       }
     }
   }
@@ -143,35 +126,30 @@ public class CodeGenerator implements Visitor {
     if (comando != null) {
       for (int i = 0; i < comando.comandos.size(); i++) {
         System.out.println();
-        // System.out.println("// Comando " + i);
         comando.comandos.get(i).visit(this);
       }
     }
   }
 
   @Override
-  public void visit_nodeComandoCondicional(nodeComandoCondicional comando) {
+  public void visit_nodeComandoCondicional(nodeComandoCondicional comandoCondicional) {
+    String ifLabel = getNextLabel();
+    String elseLabel = getNextLabel();
+    String endLabel = getNextLabel();
 
-    String elseLabel = this.getNextLabel();
-    String endLabel = this.getNextLabel();
-    // TODO: CRIAR A FUNCAO DE EMMIT
-    comando.expressao.visit(this);
+    System.out.println(ifLabel + ":");
+    comandoCondicional.expressao.visit(this);
+    printCodeLine("JUMPIF (0) " + elseLabel);
+    
+    comandoCondicional.comando1.visit(this);
+    printCodeLine("JUMP " + endLabel);
 
-    // JUMPIF (0)
-    System.out.println("JUMPIF (0) " + elseLabel);
-
-    // JUMP FIM
-    System.out.println("JUMP " + endLabel);
-
-    // ELSE
     System.out.println(elseLabel + ":");
-    if (comando.comando2 != null) {
-      comando.comando2.visit(this);
+    if (comandoCondicional.comando2 != null) {
+      comandoCondicional.comando2.visit(this);
     }
 
-    // FIM
     System.out.println(endLabel + ":");
-
   }
 
   @Override
@@ -182,11 +160,11 @@ public class CodeGenerator implements Visitor {
     System.out.println(loopLabel + ":");
     comando.expressao.visit(this);
     // JUMPIF
-    System.out.println("JUMPIF (0) " + endLabel);
+    printCodeLine("JUMPIF (0) " + endLabel);
     comando.comando.visit(this);
 
     // LOOP
-    System.out.println("JUMP " + loopLabel);
+    printCodeLine("JUMP " + loopLabel);
 
     System.out.println(endLabel + ":");
 
@@ -228,18 +206,12 @@ public class CodeGenerator implements Visitor {
       } else if (tipoVariavel == Type.REAL) {
         tamanhoVariavel = 4;
       }
-      System.out.println("PUSH " + tamanhoVariavel);
+      printCodeLine("PUSH " + tamanhoVariavel);
       variavelTipoMap.put(variavelNome, "" + tipoVariavel);
       variavelEnderecoMap.put(variavelNome, "" + this.currentAddressCounter);
       this.currentAddressCounter += tamanhoVariavel;
 
     }
-    // if(declaracao != null) {
-
-    // for(int i = 0; i < declaracao.IDs.size(); i++) {
-    // System.out.println("PUSH " + declaracao.IDs.get(i).valor);
-    // }
-    // }
   }
 
   @Override
@@ -253,6 +225,7 @@ public class CodeGenerator implements Visitor {
 
   @Override
   public void visit_nodeExpressao(nodeExpressao expressao) {
+
     if (expressao != null) {
       if (expressao.expressaoSimples1 != null) {
         expressao.expressaoSimples1.visit(this);
@@ -281,19 +254,7 @@ public class CodeGenerator implements Visitor {
 
   @Override
   public void visit_nodeFator(nodeFator fator) {
-    if (fator != null) {
-      if (fator instanceof nodeVariavel) {
-        System.out.print("LOAD ");
-        ((nodeVariavel) fator).visit(this);
 
-      } else if (fator instanceof nodeLiteral) {
-        System.out.print("LOADL ");
-        ((nodeLiteral) fator).visit(this);
-
-      } else if (fator instanceof nodeExpressao) {
-        ((nodeExpressao) fator).visit(this);
-      }
-    }
   }
 
   @Override
@@ -304,14 +265,14 @@ public class CodeGenerator implements Visitor {
   @Override
   public void visit_nodeLiteral(nodeLiteral literal) {
     if (literal != null) {
-      System.out.println("LOADL " + literal.valor);
+      printCodeLine("LOADL " + literal.valor);
     }
   }
 
   @Override
   public void visit_nodeOperador(nodeOperador operador) {
     if (operador != null) {
-      System.out.println("CALL " + convertOperadorToString(operador.valor));
+      printCodeLine("CALL " + convertOperadorToString(operador.valor));
     }
   }
 
@@ -341,7 +302,7 @@ public class CodeGenerator implements Visitor {
     if (programa != null) {
       programa.corpo.visit(this);
       freeMemory();
-      System.out.println("HALT");
+      printCodeLine("HALT");
     }
   }
 
@@ -373,7 +334,7 @@ public class CodeGenerator implements Visitor {
     if (variavel != null) {
       if (variavel.ID != null) {
         String endereco = getEnderecoVariavel(variavel.ID.valor);
-        System.out.println("LOAD " + endereco + "[SB]");
+        printCodeLine("LOAD " + endereco + "[SB]");
       }
     }
   }

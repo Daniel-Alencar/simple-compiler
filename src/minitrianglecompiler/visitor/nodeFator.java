@@ -1,6 +1,6 @@
 package minitrianglecompiler.visitor;
 
-public class nodeFator {
+public abstract class nodeFator {
   public void visit(Visitor visitor) {
     visitor.visit_nodeFator(this);
   }

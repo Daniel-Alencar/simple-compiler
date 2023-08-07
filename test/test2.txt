@@ -4,7 +4,7 @@ var v1 : integer;
 var v2 : boolean;
 var let : real;
 begin
-  variable1 := 750.2 + 0.89;
+  variable1 := variable2 + 750.2 + 0.89;
   while 1 > 0 do
   begin
     let := 750.2 - 89;
