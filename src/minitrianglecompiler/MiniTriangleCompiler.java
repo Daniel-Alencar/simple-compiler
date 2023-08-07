@@ -14,11 +14,13 @@ import minitrianglecompiler.visitor.*;
  */
 public class MiniTriangleCompiler {
 
+	public static int codeNumber = 0;
+
 	/**
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-		Scanner scanner = new Scanner("/test/test2.txt");
+		Scanner scanner = new Scanner("/test/code" + codeNumber + ".txt");
 		int counter = 0;
 		ArrayList<Token> arrayOfTokens = new ArrayList<>();
 
@@ -54,6 +56,9 @@ public class MiniTriangleCompiler {
 		checker.check(programaAST);
 
 		CodeGenerator codeGenerator = new CodeGenerator();
+
+		codeGenerator.openFile("Object-code" + codeNumber + ".txt");
 		codeGenerator.printCode(programaAST);
+		codeGenerator.closeFile();
 	}
 }

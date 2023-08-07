@@ -1,8 +1,0 @@
-program codigo;
-
-var variable : real;
-begin
-
-end
-
-.

@@ -2,6 +2,9 @@ package minitrianglecompiler.geracao_de_codigo;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import minitrianglecompiler.analise_de_contexto.Type;
 import minitrianglecompiler.visitor.*;
@@ -13,8 +16,42 @@ public class CodeGenerator implements Visitor {
   private int currentAddressCounter = 0;
   private int tabulacao = 2;
 
+  private BufferedWriter bufferedWriter;
+
   public CodeGenerator() {
     this.currentTargetCounter = 0;
+  }
+
+  public void openFile(String Filename) {
+    try {
+      // Cria um objeto FileWriter para o arquivo especificado
+      FileWriter fileWriter = new FileWriter(Filename);
+      // Cria um objeto BufferedWriter para escrever no arquivo
+      this.bufferedWriter = new BufferedWriter(fileWriter);
+    } catch (IOException e) {
+      System.err.println("Ocorreu um erro ao escrever no arquivo: " + e.getMessage());
+    }
+  }
+
+  public void closeFile() {
+    try {
+      bufferedWriter.close();
+    } catch (IOException e) {
+      System.err.println("Ocorreu um erro ao fechar o arquivo: " + e.getMessage());
+    }
+  }
+
+  public void writeCodeLine(String line) {
+    try {
+      for(int i = 0; i < tabulacao; i++) {
+        this.bufferedWriter.write(" ");
+      }
+      this.bufferedWriter.write(line);
+      this.bufferedWriter.newLine();
+
+    } catch (IOException e) {
+      System.err.println("Ocorreu um erro ao escrever no arquivo: " + e.getMessage());
+    }
   }
 
   public void printCodeLine(String line) {
@@ -24,12 +61,38 @@ public class CodeGenerator implements Visitor {
     System.out.println(line);
   }
 
+  public void generateCodeLine(String line) {
+    printCodeLine(line);
+    writeCodeLine(line);
+  }
+
+  public void generateEmptyLine() {
+    System.out.println();
+    try {
+      this.bufferedWriter.newLine();
+    } catch (IOException e) {
+      System.err.println("Ocorreu um erro ao escrever no arquivo: " + e.getMessage());
+    }
+  }
+
+  public void generateLabel(String label) {
+    System.out.println(label);
+    try {
+      this.bufferedWriter.write(label);
+      this.bufferedWriter.newLine();
+
+    } catch (IOException e) {
+      System.err.println("Ocorreu um erro ao escrever no arquivo: " + e.getMessage());
+    }
+  }
+
   private String getTipoVariavel(String variavel) {
     return variavelEnderecoMap.get(variavel);
   }
 
   private void freeMemory() {
-    System.out.println();
+    generateEmptyLine();
+
     for (String variavelNome : variavelEnderecoMap.keySet()) {
       int tamanhoVariavel = 0;
       String tipo = variavelTipoMap.get(variavelNome);
@@ -41,7 +104,7 @@ public class CodeGenerator implements Visitor {
       } else {
         tamanhoVariavel = 4;
       }
-      printCodeLine("POP " + tamanhoVariavel);
+      generateCodeLine("POP " + tamanhoVariavel);
     }
   }
 
@@ -116,7 +179,7 @@ public class CodeGenerator implements Visitor {
         // comando.variavel.visit(this);
         String variavelNome = ((nodeVariavel) comando.variavel).ID.valor;
         String endereco = getEnderecoVariavel(variavelNome);
-        printCodeLine("STORE " + endereco + "[SB]");
+        generateCodeLine("STORE " + endereco + "[SB]");
       }
     }
   }
@@ -125,7 +188,7 @@ public class CodeGenerator implements Visitor {
   public void visit_nodeComandoComposto(nodeComandoComposto comando) {
     if (comando != null) {
       for (int i = 0; i < comando.comandos.size(); i++) {
-        System.out.println();
+        generateEmptyLine();
         comando.comandos.get(i).visit(this);
       }
     }
@@ -137,19 +200,19 @@ public class CodeGenerator implements Visitor {
     String elseLabel = getNextLabel();
     String endLabel = getNextLabel();
 
-    System.out.println(ifLabel + ":");
+    generateLabel(ifLabel + ":");
     comandoCondicional.expressao.visit(this);
-    printCodeLine("JUMPIF (0) " + elseLabel);
+    generateCodeLine("JUMPIF (0) " + elseLabel);
     
     comandoCondicional.comando1.visit(this);
-    printCodeLine("JUMP " + endLabel);
+    generateCodeLine("JUMP " + endLabel);
 
-    System.out.println(elseLabel + ":");
+    generateLabel(elseLabel + ":");
     if (comandoCondicional.comando2 != null) {
       comandoCondicional.comando2.visit(this);
     }
 
-    System.out.println(endLabel + ":");
+    generateLabel(endLabel + ":");
   }
 
   @Override
@@ -157,16 +220,16 @@ public class CodeGenerator implements Visitor {
     String loopLabel = this.getNextLabel();
     String endLabel = this.getNextLabel();
 
-    System.out.println(loopLabel + ":");
+    generateLabel(loopLabel + ":");
     comando.expressao.visit(this);
     // JUMPIF
-    printCodeLine("JUMPIF (0) " + endLabel);
+    generateCodeLine("JUMPIF (0) " + endLabel);
     comando.comando.visit(this);
 
     // LOOP
-    printCodeLine("JUMP " + loopLabel);
+    generateCodeLine("JUMP " + loopLabel);
 
-    System.out.println(endLabel + ":");
+    generateLabel(endLabel + ":");
 
   }
 
@@ -206,7 +269,7 @@ public class CodeGenerator implements Visitor {
       } else if (tipoVariavel == Type.REAL) {
         tamanhoVariavel = 4;
       }
-      printCodeLine("PUSH " + tamanhoVariavel);
+      generateCodeLine("PUSH " + tamanhoVariavel);
       variavelTipoMap.put(variavelNome, "" + tipoVariavel);
       variavelEnderecoMap.put(variavelNome, "" + this.currentAddressCounter);
       this.currentAddressCounter += tamanhoVariavel;
@@ -265,14 +328,14 @@ public class CodeGenerator implements Visitor {
   @Override
   public void visit_nodeLiteral(nodeLiteral literal) {
     if (literal != null) {
-      printCodeLine("LOADL " + literal.valor);
+      generateCodeLine("LOADL " + literal.valor);
     }
   }
 
   @Override
   public void visit_nodeOperador(nodeOperador operador) {
     if (operador != null) {
-      printCodeLine("CALL " + convertOperadorToString(operador.valor));
+      generateCodeLine("CALL " + convertOperadorToString(operador.valor));
     }
   }
 
@@ -302,7 +365,7 @@ public class CodeGenerator implements Visitor {
     if (programa != null) {
       programa.corpo.visit(this);
       freeMemory();
-      printCodeLine("HALT");
+      generateCodeLine("HALT");
     }
   }
 
@@ -334,7 +397,7 @@ public class CodeGenerator implements Visitor {
     if (variavel != null) {
       if (variavel.ID != null) {
         String endereco = getEnderecoVariavel(variavel.ID.valor);
-        printCodeLine("LOAD " + endereco + "[SB]");
+        generateCodeLine("LOAD " + endereco + "[SB]");
       }
     }
   }

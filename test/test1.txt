@@ -1,8 +1,0 @@
-program codigo;
-
-var variable : real;
-begin
-  variable := 750.2 + .89;
-end
-
-.
