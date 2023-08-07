@@ -1,0 +1,13 @@
+program codigo;
+var celsius, fahrenheit, kelvin : real;
+
+begin
+  ! Valor em Celsius
+  celsiusº := 100;
+
+  ! Valores convertidos
+  fahrenheit := := 1.8 * celsius + 32;
+  kelvin := celsius > 273;
+end
+
+.

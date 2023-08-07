@@ -1,0 +1,18 @@
+program codigo;
+var variable1, variable2, variable3 : real;
+var v1, v2, v3 : integer;
+
+! Isso é um comentário Prof. Marcus
+! Por que uma galinha atravessou a rua?
+! Para fazer um compilador de uma linguagem LL(1) do outro lado
+
+begin
+  v1 := 0;
+  v2 := 500;
+  while v1 < v2 do
+  begin
+    v1 := v1 + 1;
+  end
+end
+
+.

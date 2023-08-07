@@ -258,9 +258,11 @@ public class Parser {
         break;
 
       default:
-        new ShowError("Erro no fator: " + arrayOfTokens.get(currentIndex).spelling + "Não identificado" 
-        + "Linha: " + arrayOfTokens.get(currentIndex).line  + "\""
-      + " Coluna: " + arrayOfTokens.get(currentIndex).column);
+        new ShowError(
+          "Símbolo \"" + arrayOfTokens.get(currentIndex).spelling + "\" não identificado"  + "\n" + 
+          "Linha: " + arrayOfTokens.get(currentIndex).line + " " + 
+          "Coluna: " + arrayOfTokens.get(currentIndex).column
+        );
     }
     return fator;
   }
